@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2>{{.title }}</h2>
+<div id="datetime">
+    <script>
+        setInterval("document.getElementById('datetime').innerHTML=new Date().toLocaleString();", 1000);
+    </script>
+</div>
+</body>
+</html>
