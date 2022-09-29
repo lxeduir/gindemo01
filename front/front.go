@@ -16,6 +16,7 @@ func Main(rack *gin.Engine) {
 	rack.GET("/", IndexHtml)
 	frontGroup := rack.Group("/front")
 	{
+		frontGroup.GET("/", index)
 		frontGroup.POST("/login", LoginUser)
 		frontGroup.POST("/signup", SignUpUser)
 	}
@@ -68,3 +69,9 @@ func LoginUser(c *gin.Context) {
 	c.JSON(200, JsonR)
 
 } //登录demo
+func index(c *gin.Context) {
+	c.JSON(200, gin.H{
+		"state": 1,
+		"msg":   "index",
+	})
+}
