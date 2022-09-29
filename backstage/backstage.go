@@ -2,6 +2,7 @@ package backstage
 
 import (
 	"gindemo01/sql_operate"
+	"gindemo01/universal"
 	"github.com/gin-gonic/gin"
 	"time"
 )
@@ -17,9 +18,9 @@ func SignUpUser(c *gin.Context) {
 	U := sql_operate.Admininfo{
 		Uid:    c.PostForm("uid"),
 		Name:   c.PostForm("username"),
-		Passwd: sql_operate.MD5(c.PostForm("passwd")),
-		Token:  sql_operate.MD5(c.PostForm("token")),
-		Rtoken: sql_operate.MD5(c.PostForm("rtoken")),
+		Passwd: universal.MD5(c.PostForm("passwd")),
+		Token:  universal.MD5(c.PostForm("token")),
+		Rtoken: universal.MD5(c.PostForm("rtoken")),
 	}
 	codes := 200
 	states := 1
@@ -42,7 +43,7 @@ func LoginAdmin(c *gin.Context) {
 		Uid:    c.PostForm("uid"),
 		Passwd: c.PostForm("passwd"),
 	}
-	u.Passwd = sql_operate.MD5(u.Passwd)
+	u.Passwd = universal.MD5(u.Passwd)
 	var user = sql_operate.AdminInfoFind(u)
 	states := 3
 	if len(user) == 0 {
