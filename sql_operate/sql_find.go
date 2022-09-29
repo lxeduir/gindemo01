@@ -26,7 +26,7 @@ func UserInfoFind(u Userinfo) []Userinfo {
 	db.Debug().Where("uid = ?", u.Uid).First(&user)
 	//fmt.Println("查询第一条匹配条件记录：", user)
 	return user
-}
+} //查询
 func AdminInfoFind(u Admininfo) []Admininfo {
 	db, err := gorm.Open("mysql", sqlUserId)
 	if err != nil {
