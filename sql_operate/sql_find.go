@@ -20,7 +20,7 @@ func UserInfoFind(u Userinfo) []Userinfo {
 		}
 	}(db)
 
-	db.SingularTable(true)
+	db.SingularTable(true) //严格匹配数据库名字
 	db.AutoMigrate(&Userinfo{})
 	var user []Userinfo
 	db.Debug().Where("uid = ?", u.Uid).First(&user)
@@ -75,3 +75,21 @@ func UserTokenFindTime(u Usertoken) bool {
 	}
 	return true
 } //查询token是否过期
+func UserEmailTokenFind(u Useremailtoken) []Useremailtoken {
+	db, err := gorm.Open("mysql", sqlUserId)
+	if err != nil {
+		panic(err)
+	}
+	defer func(db *gorm.DB) {
+		err := db.Close()
+		if err != nil {
+		}
+	}(db)
+
+	db.SingularTable(true) //严格匹配数据库名字
+	db.AutoMigrate(&Useremailtoken{})
+	var user []Useremailtoken
+	db.Debug().Where("uid = ?", u.Uid).First(&user)
+	//fmt.Println("查询第一条匹配条件记录：", user)
+	return user
+}

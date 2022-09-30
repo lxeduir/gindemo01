@@ -4,6 +4,7 @@ type Userinfo struct {
 	Uid    string
 	Name   string
 	Passwd string
+	Email  string
 }
 type Admininfo struct {
 	Uid    string
@@ -17,4 +18,12 @@ type Usertoken struct {
 	Token          string
 	Updatetime     int64
 	Expirationtime int64
+}
+type Useremailtoken struct {
+	Uid            string
+	Email          string
+	Updatetime     int64
+	Expirationtime int64
+	State          int
+	Token          string
 }

@@ -2,6 +2,7 @@ package front
 
 import (
 	"fmt"
+	"gindemo01/email"
 	"gindemo01/sql_operate"
 	"gindemo01/universal"
 	"github.com/gin-gonic/gin"
@@ -17,8 +18,10 @@ func Main(rack *gin.Engine) {
 		frontGroup.POST("/signup", SignUpUser)
 		frontGroup.GET("/tokens", ResponseTokens)
 		frontGroup.GET("/tokentime", CheckTokenTime)
+		frontGroup.GET("/email", Email)
+		frontGroup.GET("/signup/emailverification", emailverification)
 	}
-} //前端主路由
+} // 前端主路由
 func SignUpUser(c *gin.Context) {
 	var u sql_operate.Usertoken
 	u.Token = "error"
@@ -27,29 +30,42 @@ func SignUpUser(c *gin.Context) {
 		Uid:    c.PostForm("uid"),
 		Name:   c.PostForm("username"),
 		Passwd: universal.MD5(c.PostForm("passwd")),
+		Email:  c.PostForm("email"),
+	}
+	U2 := sql_operate.Useremailtoken{
+		Uid:            U.Uid,
+		Email:          U.Email,
+		Updatetime:     time.Now().Unix(),
+		Expirationtime: time.Now().Unix() + 600,
+		State:          0,
+		Token:          universal.MD5(U.Passwd + U.Uid),
 	}
 	codes := 200
 	states := 1
 	if len(U.Uid) != 11 {
 		codes = 200
-		states = 2 //表示错误来自客户端
+		states = 0 //表示错误来自客户端
 	} else {
 		states = sql_operate.UserInfoAdd(U) //添加用户表单
 		u.Uid = U.Uid
 		u.Token = universal.MD5(U.Passwd + U.Uid)
-		tokenAdd = sql_operate.UserTokenAdd(u)
+		states += sql_operate.UserTokenAdd(u) * 10
 		//添加用户token表单
+		states += sql_operate.UserEmailTokenAdd(U2) * 100
+		//添加注册验证用表单
 	}
 	//fmt.Println(states)
+	to := []string{U.Email}
+	add := "?uid=" + U.Uid + "&token=" + u.Token + "&email=" + U.Email
 	JsonR := gin.H{
 		"state": states, //表示状态
 		"uid":   U.Uid,
 		"code":  codes,
 		"token": u.Token,
 		"msg":   tokenAdd,
+		"email": email.Email(to, email.EmailSignUp(add)),
 	}
 	c.JSON(200, JsonR)
-
 } //用户注册
 func LoginUser(c *gin.Context) {
 	u := sql_operate.Userinfo{
@@ -145,4 +161,54 @@ func CheckTokenTime(c *gin.Context) {
 		"msg":   msg,
 	}
 	c.JSON(200, Rjson)
+}
+func Email(c *gin.Context) {
+	emails, ok1 := c.GetQuery("email")
+	if !ok1 {
+		c.JSON(200, gin.H{
+			"error": "error",
+		})
+		return
+	}
+	to := []string{emails}
+	email.Email(to, email.EmailSignUp("?123"))
+	c.JSON(200, gin.H{
+		"code": 200,
+	})
+
+}
+func emailverification(c *gin.Context) {
+	uid, ok1 := c.GetQuery("uid") //取不到query就返回false
+	token, ok2 := c.GetQuery("token")
+	emails, ok3 := c.GetQuery("email")
+	U := sql_operate.Useremailtoken{
+		Uid:   uid,
+		Email: emails,
+		Token: token,
+	}
+	U2 := sql_operate.Usertoken{
+		Uid:   uid,
+		Token: token,
+	}
+	if !ok3 && !ok1 && !ok2 {
+		c.JSON(200, gin.H{
+			"code": 201,
+			"msg":  "error",
+		})
+	} else {
+		u := sql_operate.UserEmailTokenFind(U)
+		u2 := sql_operate.UserTokenFind(U2)
+		if len(u) != 1 {
+			c.JSON(200, gin.H{
+				"code": 201,
+				"msg":  "error",
+			})
+		} else {
+			c.JSON(200, gin.H{
+				"code":  200,
+				"msg":   "true",
+				"token": sql_operate.UserTokenRevise(u2[0]),
+			})
+		}
+	}
 }
