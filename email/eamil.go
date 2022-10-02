@@ -18,7 +18,7 @@ func Email(to []string, content string) bool {
 	fmt.Println(err)
 	return true
 }
-func EmailSignUp(addr string) string {
+func SignUp(addr string) string {
 	headText := "请点击链接完成注册"
 	//curl1 := "http://api.edulx.xyz/front/signup/emailverification"
 	curl1 := "http://127.0.0.1:8000/front/signup/emailverification" //本地测试用

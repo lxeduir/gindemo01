@@ -8,7 +8,7 @@ import (
 )
 
 func UserInfoAdd(U Userinfo) int {
-	u := UserInfoFind(U)
+	u := UserInfoFindEmail(U)
 	if len(u) > 0 {
 		return 2
 	} else {

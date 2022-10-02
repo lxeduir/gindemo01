@@ -6,10 +6,25 @@ import (
 	"time"
 )
 
-// sqlUserId 数据库账号密码
-const sqlUserId = "users:liuxun@(101.43.6.142:3306)/users?charset=utf8mb4&parseTime=True&loc=Local"
+func UserInfoFindEmail(u Userinfo) []Userinfo {
+	db, err := gorm.Open("mysql", sqlUserId)
+	if err != nil {
+		panic(err)
+	}
+	defer func(db *gorm.DB) {
+		err := db.Close()
+		if err != nil {
+		}
+	}(db)
 
-func UserInfoFind(u Userinfo) []Userinfo {
+	db.SingularTable(true) //严格匹配数据库名字
+	db.AutoMigrate(&Userinfo{})
+	var user []Userinfo
+	db.Debug().Where("email = ?", u.Email).First(&user)
+	//fmt.Println("查询第一条匹配条件记录：", user)
+	return user
+} //查询注册用
+func UserInfoFindUid(u Userinfo) []Userinfo {
 	db, err := gorm.Open("mysql", sqlUserId)
 	if err != nil {
 		panic(err)
@@ -26,7 +41,7 @@ func UserInfoFind(u Userinfo) []Userinfo {
 	db.Debug().Where("uid = ?", u.Uid).First(&user)
 	//fmt.Println("查询第一条匹配条件记录：", user)
 	return user
-} //查询
+} //查询注册用
 func AdminInfoFind(u Admininfo) []Admininfo {
 	db, err := gorm.Open("mysql", sqlUserId)
 	if err != nil {
