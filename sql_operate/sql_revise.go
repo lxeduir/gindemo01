@@ -29,11 +29,7 @@ func UserInfoRevise(U Userinfo) {
 	var user Userinfo
 	db.First(&user)
 	fmt.Println(user)
-	db.Debug().Model(&user).Updates(gin.H{
-		"Uid":    U.Uid,
-		"Name":   U.Name,
-		"Passwd": U.Passwd,
-	})
+	db.Debug().Model(&user).Updates(U)
 }
 func AdminInfoRevise(U Admininfo) {
 	// 2, 连接数据库

@@ -15,12 +15,14 @@ func Email(to []string, content string) bool {
 	auth := smtp.PlainAuth("2508339002@qq.com", "2508339002@qq.com", "seuyirptahcudjjb", "smtp.qq.com")
 	from := "2508339002@qq.com"
 	err := smtp.SendMail(addr, auth, from, to, msg)
-	fmt.Println(err)
+	if err != nil {
+		return false
+	}
 	return true
 }
 func SignUp(addr string) string {
 	headText := "请点击链接完成注册"
-	//curl1 := "http://api.edulx.xyz/front/signup/emailverification"
+	//curl1 := "https://api.edulx.xyz/front/signup/emailverification"
 	curl1 := "http://127.0.0.1:8000/front/signup/emailverification" //本地测试用
 	curl1 += addr
 	content := headText + curl1

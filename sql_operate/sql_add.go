@@ -1,14 +1,13 @@
 package sql_operate
 
 import (
-	"fmt"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"time"
 )
 
 func UserInfoAdd(U Userinfo) int {
-	u := UserInfoFindEmail(U)
+	u := UserInfoFindEmail(U.Email)
 	if len(u) > 0 {
 		return 2
 	} else {
@@ -68,9 +67,9 @@ func UserTokenAdd(U Usertoken) int {
 		db.SingularTable(true)
 		U.Updatetime = time.Now().Unix()
 		U.Expirationtime = U.Updatetime + 201
-		fmt.Println(db.NewRecord(&U))
+		//fmt.Println(db.NewRecord(&U))
 		db.Create(&U) //将上边定义的用户数据写入到数据库user表中
-		fmt.Println(db.NewRecord(&U))
+		//fmt.Println(db.NewRecord(&U))
 	}
 	return 1
 }

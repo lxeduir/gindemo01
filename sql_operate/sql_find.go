@@ -6,7 +6,9 @@ import (
 	"time"
 )
 
-func UserInfoFindEmail(u Userinfo) []Userinfo {
+func UserInfoFindEmail(emails string) []Userinfo {
+	var u Userinfo
+	u.Email = emails
 	db, err := gorm.Open("mysql", sqlUserId)
 	if err != nil {
 		panic(err)
@@ -21,24 +23,6 @@ func UserInfoFindEmail(u Userinfo) []Userinfo {
 	db.AutoMigrate(&Userinfo{})
 	var user []Userinfo
 	db.Debug().Where("email = ?", u.Email).First(&user)
-	//fmt.Println("查询第一条匹配条件记录：", user)
-	return user
-} //查询注册用
-func UserInfoFindUid(u Userinfo) []Userinfo {
-	db, err := gorm.Open("mysql", sqlUserId)
-	if err != nil {
-		panic(err)
-	}
-	defer func(db *gorm.DB) {
-		err := db.Close()
-		if err != nil {
-		}
-	}(db)
-
-	db.SingularTable(true) //严格匹配数据库名字
-	db.AutoMigrate(&Userinfo{})
-	var user []Userinfo
-	db.Debug().Where("uid = ?", u.Uid).First(&user)
 	//fmt.Println("查询第一条匹配条件记录：", user)
 	return user
 } //查询注册用
@@ -73,7 +57,7 @@ func UserTokenFind(u Usertoken) []Usertoken {
 
 	db.SingularTable(true)
 	u.Updatetime = time.Now().Unix()
-	u.Expirationtime = u.Updatetime + 201
+	u.Expirationtime = u.Updatetime + 600
 	db.AutoMigrate(&Usertoken{})
 	var user []Usertoken
 	db.Debug().Where("uid = ?", u.Uid).First(&user)

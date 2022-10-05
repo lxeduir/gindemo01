@@ -22,10 +22,12 @@ type Admininfo struct {
 	Rtoken string
 }
 type Usertoken struct {
-	Uid            string
-	Token          string
-	Updatetime     int64
-	Expirationtime int64
+	Uid             string
+	Token           string
+	Refreshtoken    string
+	Updatetime      int64
+	Expirationtime  int64
+	Rtepirationtime int64
 }
 type Useremailtoken struct {
 	Uid            string

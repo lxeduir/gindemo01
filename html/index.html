@@ -6,10 +6,8 @@
 </head>
 <body>
 <h2>{{.title }}</h2>
-<div id="datetime">
-    <script>
-        setInterval("document.getElementById('datetime').innerHTML=new Date().toLocaleString();", 1000);
-    </script>
-</div>
+<h3>{{.text}}</h3>
+<p>当前时间{{.time}}</p>
+<a href="{{.curl}}"  >点击前往主页</a>
 </body>
 </html>
