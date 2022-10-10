@@ -17,10 +17,11 @@ func Main(rack *gin.Engine) {
 		frontGroup.GET("/", Index)
 		frontGroup.POST("/login", LoginUser)
 		frontGroup.POST("/signup", SignUpUser)
+		frontGroup.GET("/signup/emailverification", emailverification)
 		frontGroup.GET("/tokens", ResponseTokens)
 		frontGroup.GET("/tokentime", CheckTokenTime)
 		frontGroup.GET("/email", Email)
-		frontGroup.GET("/signup/emailverification", emailverification)
+
 	}
 } // 前端主路由
 func Index(c *gin.Context) {

@@ -45,7 +45,8 @@ func SignUpUser(c *gin.Context) {
 		U2.Rtepirationtime = time.Now().Unix() + 86400
 		to := []string{u.Email}
 		times := strconv.FormatInt(time.Now().Unix()+600, 10)
-		add := "?uid=" + u.Uid + "&token=" + u.Token + "&email=" + u.Email + "&time=" + times
+		AntiModification := universal.MD5(universal.MD5(times+u.Uid+u.Token+u.Email) + u.Email + u.Uid + u.Email)
+		add := "?uid=" + u.Uid + "&token=" + u.Token + "&email=" + u.Email + "&time=" + times + "&antimodification=" + AntiModification
 		sql_operate.UserTokenAdd(U2)
 		email.Email(to, email.SignUp(add))
 		c.JSON(200, gin.H{

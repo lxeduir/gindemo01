@@ -22,11 +22,14 @@ func emailverification(c *gin.Context) {
 	token, ok2 := c.GetQuery("token")
 	emails, ok3 := c.GetQuery("email")
 	times, ok4 := c.GetQuery("time")
+	AntiModification, ok5 := c.GetQuery("antimodification")
 	timeout, err := strconv.ParseInt(times, 10, 64)
-	if !ok1 && !ok2 && !ok3 && !ok4 && err != nil {
+	if !ok1 && !ok2 && !ok3 && !ok4 && ok5 && err != nil {
 		E.text = "验证失败,链接缺少必要参数"
 	} else if timeout < time.Now().Unix() {
-		E.text = "验证失败,链接已失效"
+		E.text = "链接已失效"
+	} else if AntiModification != universal.MD5(universal.MD5(times+uid+token+emails)+emails+uid+emails) {
+		E.text = "禁止修改链接"
 	} else {
 		U := sql_operate.UserInfoFindEmail(emails)
 		if len(U) == 1 && U[0].Uid == uid && U[0].Token == token {
@@ -34,12 +37,11 @@ func emailverification(c *gin.Context) {
 			U[0].Userstatus = 1
 			sql_operate.UserInfoRevise(U[0])
 			E.text = "验证成功，请前往首页重新登录"
-		} else if len(U) == 1 && U[0].Userstatus == 1 {
+		} else if U[0].Userstatus == 1 {
 			E.text = "已完成验证，请勿重复验证"
 		} else {
 			E.text = "验证失败，找不到此用户或校验识别码失效"
 		}
-
 	}
 	S := time.Now().String()
 	c.HTML(http.StatusOK, "index.html", gin.H{
