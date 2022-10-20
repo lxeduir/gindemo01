@@ -1,0 +1,11 @@
+├─config     # viper读取配置
+├─controller # controller层，响应路由请求的方法
+├─docs       # 一些物料信息
+├─logic      # 主要的处理逻辑
+├─middleware # 中间件
+├─model      # 结构体模型
+├─public     # 一些公共的，工具类的放在这里
+├─routes     # 所有路由
+├─service    # 整合与底层存储交互的方法
+├─svc        # 定义入参出参的结构体
+└─test       # 跑测试用的
