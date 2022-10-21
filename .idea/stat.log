@@ -1,0 +1,7 @@
+{"ts":1666087182595,"action":"PROJECT_OPENED","tags":{"PROJECT_NAME":"gindemo01"}}
+{"ts":1666087199394,"action":"IDE_DEACTIVATED"}
+{"ts":1666087199595,"action":"FILE_CLOSED","file":"/main.go","tags":{"FILE_LINE_OF_CODE":"56"}}
+{"ts":1666087199641,"action":"PROJECT_CLOSED","tags":{"PROJECT_NAME":"gindemo01"}}
+{"ts":1666087297339,"action":"FILE_OPENED","file":"/main.go","tags":{"FILE_LINE_OF_CODE":"56"}}
+{"ts":1666087298331,"action":"PROJECT_OPENED","tags":{"PROJECT_NAME":"gindemo01"}}
+{"ts":1666087356437,"action":"PROJECT_CLOSED","tags":{"PROJECT_NAME":"gindemo01"}}

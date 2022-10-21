@@ -16,7 +16,6 @@ func UserInfoAdd(U config.Userinfo) int {
 		defer func(db *gorm.DB) {
 			err := db.Close()
 			if err != nil {
-
 			}
 		}(db)
 		if err != nil {

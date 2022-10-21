@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gindemo01/config"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 	"time"
 )
 
@@ -24,21 +25,29 @@ func parseToken(tokenString string) (*jwt.Token, *claims, error) {
 	})
 	return token, Claims, err
 }
-func GetToken(tokenString string) string {
+func GetToken(tokenString string) gin.H {
 	if tokenString == "" {
-		return "token不能为空"
+		return gin.H{
+			"msg": "token不能为空",
+		}
 	}
 	// 再来解析token，解析失败则跳出
 	token, claims, err := parseToken(tokenString)
 	if err != nil || !token.Valid {
-		return "token错误"
+		return gin.H{
+			"msg": "token错误",
+		}
 	}
 	// 最后成功了
 	U := UserInfoFind("uid", claims.UserId, Method[0])
 	if len(U) == 0 {
-		return "用户不存在"
+		return gin.H{
+			"msg": "用户不存在",
+		}
 	}
-	return claims.UserId
+	return gin.H{
+		"mas": 1,
+	}
 }
 
 func SetToken(U config.Userinfo, expireTime time.Time) string {
