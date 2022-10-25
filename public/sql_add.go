@@ -1,18 +1,20 @@
 package public
 
 import (
-	"gindemo01/config"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"time"
 )
 
-func UserInfoAdd(U config.Userinfo) int {
-	u := UserInfoFind("email", U.Email, Method[0])
+func UserInfoAdd(U Userinfo) int {
+	var f Userinfo
+	var find Finder = &f
+	//u := UserInfoFind("email", U.Email, Method[0])
+	u := find.All("email", U.Email).([]Userinfo)
 	if len(u) > 0 {
 		return 2
 	} else {
-		db, err := gorm.Open("mysql", config.SqlUserId)
+		db, err := gorm.Open("mysql", SqlUserId)
 		defer func(db *gorm.DB) {
 			err := db.Close()
 			if err != nil {
@@ -28,12 +30,15 @@ func UserInfoAdd(U config.Userinfo) int {
 	}
 	return 1
 } //UserInfo表写入
-func AdminInfoAdd(U config.Admininfo) int {
-	u := AdminInfoFind("email", U.Email, Method[0])
+func AdminInfoAdd(U Admininfo) int {
+	var f Admininfo
+	var find Finder = &f
+	u := find.All("email", U.Email).([]Admininfo)
+	//u := AdminInfoFind("email", U.Email, Method[0])
 	if len(u) > 0 {
 		return 3
 	} else {
-		db, err := gorm.Open("mysql", config.SqlUserId)
+		db, err := gorm.Open("mysql", SqlUserId)
 		defer func(db *gorm.DB) {
 			err := db.Close()
 			if err != nil {
@@ -50,12 +55,12 @@ func AdminInfoAdd(U config.Admininfo) int {
 	}
 	return 1
 } //AdminInfo表写入
-func UserTokenAdd(U config.Usertoken) int {
+func UserTokenAdd(U Usertoken) int {
 	u := UserTokenFind(U)
 	if len(u) > 0 {
 		return 2
 	} else {
-		db, err := gorm.Open("mysql", config.SqlUserId)
+		db, err := gorm.Open("mysql", SqlUserId)
 		defer func(db *gorm.DB) {
 			err := db.Close()
 			if err != nil {
@@ -73,12 +78,12 @@ func UserTokenAdd(U config.Usertoken) int {
 	}
 	return 1
 } //
-func UserEmailTokenAdd(U config.Useremailtoken) int {
+func UserEmailTokenAdd(U Useremailtoken) int {
 	u := UserEmailTokenFind(U)
 	if len(u) > 0 {
 		return 2
 	} else {
-		db, err := gorm.Open("mysql", config.SqlUserId)
+		db, err := gorm.Open("mysql", SqlUserId)
 		defer func(db *gorm.DB) {
 			err := db.Close()
 			if err != nil {

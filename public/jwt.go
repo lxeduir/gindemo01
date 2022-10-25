@@ -2,10 +2,11 @@ package public
 
 import (
 	"fmt"
-	"gindemo01/config"
+	"strconv"
+	"time"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"time"
 )
 
 var jwtkey = []byte("api.edulx.xyz")
@@ -28,34 +29,62 @@ func parseToken(tokenString string) (*jwt.Token, *claims, error) {
 func GetToken(tokenString string) gin.H {
 	if tokenString == "" {
 		return gin.H{
-			"msg": "token不能为空",
+			"msg":  "token不能为空",
+			"code": 200,
 		}
 	}
 	// 再来解析token，解析失败则跳出
+
 	token, claims, err := parseToken(tokenString)
 	if err != nil || !token.Valid {
 		return gin.H{
-			"msg": "token错误",
+			"msg":  "token错误",
+			"code": 200,
 		}
 	}
 	// 最后成功了
-	U := UserInfoFind("uid", claims.UserId, Method[0])
+	var f Userinfo
+	var find Finder = &f
+	//U := UserInfoFind("uid", claims.UserId, Method[0])
+	U := find.All("uid", claims.UserId).([]Userinfo)
 	if len(U) == 0 {
 		return gin.H{
-			"msg": "用户不存在",
+			"msg":  "用户不存在",
+			"code": 200,
 		}
 	}
 	return gin.H{
-		"mas": 1,
+		"msg": 1,
 	}
 }
-
-func SetToken(U config.Userinfo, expireTime time.Time) string {
+func SetTokenUserinfo(U Userinfo, expireTime time.Time) string {
 	//expireTime := time.Now().Add(24 * time.Hour)
 	claims := &claims{
 		UserId:      U.Uid,
 		Permissions: U.Permissions,
-		Userstatus:  string(U.Userstatus),
+		Userstatus:  strconv.Itoa(U.Userstatus),
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: expireTime.Unix(), //过期时间
+			IssuedAt:  time.Now().Unix(),
+			Issuer:    "101,43,6,14", // 签名颁发者
+			Subject:   "user token",  //签名主题
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	// fmt.Println(token)
+	tokenString, err := token.SignedString(jwtkey)
+	if err != nil {
+		fmt.Println(err)
+		return "error"
+	}
+	// str = tokenString
+	return tokenString
+}
+func SetTokenAdmininfo(U Admininfo, expireTime time.Time) string {
+	//expireTime := time.Now().Add(24 * time.Hour)
+	claims := &claims{
+		UserId:      U.Uid,
+		Permissions: string(U.State),
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expireTime.Unix(), //过期时间
 			IssuedAt:  time.Now().Unix(),

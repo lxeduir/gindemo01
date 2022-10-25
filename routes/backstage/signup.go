@@ -1,8 +1,6 @@
 package backstage
 
 import (
-	"fmt"
-	"gindemo01/config"
 	"gindemo01/public"
 	"github.com/gin-gonic/gin"
 	"math/rand"
@@ -19,7 +17,7 @@ type signUpAdminR struct {
 }
 
 func SignUpAdmin(c *gin.Context) {
-	var u config.Admininfo
+	var u public.Admininfo
 	var U signUpAdminR
 	U.msg = 1
 	U.state = 0
@@ -28,11 +26,10 @@ func SignUpAdmin(c *gin.Context) {
 	if err := c.ShouldBind(&u); err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{"error": err.Error()})
 	} else {
-		fmt.Println(u)
 		r := rand.New(rand.NewSource(time.Now().UnixNano()))
 		u.Uid = strconv.FormatInt((time.Now().Unix()-660000000)*100+int64(r.Intn(128)), 10)
 		u.Passwd = public.MD5(u.Passwd + u.Uid)
-		u.Token = public.MD5(u.Passwd + u.Uid)
+		u.Token = public.SetTokenAdmininfo(u, time.Now().Add(7*24*time.Hour))
 		u.State = 111
 	}
 	if public.VerifyEmailFormat(u.Email) {

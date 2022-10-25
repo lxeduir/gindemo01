@@ -3,7 +3,8 @@ package main
 import (
 	"fmt"
 	"gindemo01/public"
-	"gindemo01/routes"
+	"gindemo01/routes/backstage"
+	"gindemo01/routes/front"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
@@ -14,8 +15,8 @@ func main() {
 	//r := gin.New()
 	r := gin.Default()
 	r.Use(Cors())
-	routes.BackMain(r)
-	routes.Main(r)
+	backstage.BackMain(r)
+	front.Main(r)
 	public.ErrorApi(r)
 	r.Run(":8000")
 }

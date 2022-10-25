@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"gindemo01/public"
-	"gindemo01/routes/front"
+	"gindemo01/routes/front/login"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -16,14 +16,17 @@ func TokenGet(ctx *gin.Context) {
 		return
 	}
 	// 再来解析token，解析失败则跳出
-	Uid := front.GetToken(tokenString)
+	Uid := login.GetToken(tokenString)
 	if Uid == "token错误" {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "token错误"})
 		ctx.Abort()
 		return
 	}
 	// 最后成功了
-	U := public.UserInfoFind("uid", Uid, public.Method[0])
+	var u public.Userinfo
+	var find public.Finder = &u
+	//U = public.UserInfoFind("uid", Uid, public.Method[0])
+	U := find.All("uid", Uid).([]public.Userinfo)
 	if len(U) > 0 && U[0].Userstatus == 1 {
 		return
 	} else if U[0].Userstatus != 1 {
