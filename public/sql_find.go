@@ -1,60 +1,14 @@
 package public
 
 import (
+	"gindemo01/common"
+	"gindemo01/struct/sql_del_struct"
 	"github.com/jinzhu/gorm"
-	"time"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-var Method = []string{"first", "contain", "all"}
-
-//	func UserInfoFind(target string, content string, method string) []Userinfo {
-//		db, err := gorm.Open("mysql", SqlUserId)
-//		if err != nil {
-//			panic(err)
-//		}
-//		defer func(db *gorm.DB) {
-//			err := db.Close()
-//			if err != nil {
-//			}
-//		}(db)
-//		db.SingularTable(true) //严格匹配数据库名字
-//		db.AutoMigrate(&Userinfo{})
-//		var user []Userinfo
-//		if method == "first" {
-//			db.Debug().Where(target+" = ?", content).First(&user) //查询第一条匹配条件记录
-//		} else if method == "contain" {
-//			db.Debug().Where(target+" LIKE ?", "%"+content+"%").Find(&user) //查询所有包含contrnt的记录
-//		} else if method == "all" {
-//			db.Debug().Where(target+" = ?", content).Find(&user) //查询所有匹配条件的记录
-//		}
-//		return user
-//	} //userinfo表通用查询方法
-//
-//	func AdminInfoFind(target string, content string, method string) []Admininfo {
-//		db, err := gorm.Open("mysql", SqlUserId)
-//		if err != nil {
-//			panic(err)
-//		}
-//		defer func(db *gorm.DB) {
-//			err := db.Close()
-//			if err != nil {
-//			}
-//		}(db)
-//
-//		db.SingularTable(true)
-//		db.AutoMigrate(&Admininfo{})
-//		var user []Admininfo
-//		if method == "first" {
-//			db.Debug().Where(target+" = ?", content).First(&user) //查询第一条匹配条件记录
-//		} else if method == "contain" {
-//			db.Debug().Where(target+" LIKE ?", "%"+content+"%").Find(&user) //查询所有包含contrnt的记录
-//		} else if method == "all" {
-//			db.Debug().Where(target+" = ?", content).Find(&user) //查询所有匹配条件的记录
-//		}
-//		return user
-//	}
-func UserTokenFind(u Usertoken) []Usertoken {
-	db, err := gorm.Open("mysql", SqlUserId)
+func UserinfoFind(field string, content string) []sql_del_struct.Userinfo {
+	db, err := gorm.Open("mysql", common.MysqlInfo.Id)
 	if err != nil {
 		panic(err)
 	}
@@ -63,17 +17,14 @@ func UserTokenFind(u Usertoken) []Usertoken {
 		if err != nil {
 		}
 	}(db)
-
-	db.SingularTable(true)
-	u.Updatetime = time.Now().Unix()
-	u.Expirationtime = u.Updatetime + 600
-	db.AutoMigrate(&Usertoken{})
-	var user []Usertoken
-	db.Debug().Where("uid = ?", u.Uid).Find(&user)
+	db.SingularTable(true) //严格匹配数据库名字
+	db.AutoMigrate(&sql_del_struct.Userinfo{})
+	var user []sql_del_struct.Userinfo
+	db.Debug().Where(field+" = ?", content).Find(&user)
 	return user
 }
-func UserEmailTokenFind(u Useremailtoken) []Useremailtoken {
-	db, err := gorm.Open("mysql", SqlUserId)
+func UserinfoFirst(field string, content string) sql_del_struct.Userinfo {
+	db, err := gorm.Open("mysql", common.MysqlInfo.Id)
 	if err != nil {
 		panic(err)
 	}
@@ -82,11 +33,41 @@ func UserEmailTokenFind(u Useremailtoken) []Useremailtoken {
 		if err != nil {
 		}
 	}(db)
-
 	db.SingularTable(true) //严格匹配数据库名字
-	db.AutoMigrate(&Useremailtoken{})
-	var user []Useremailtoken
-	db.Debug().Where("uid = ?", u.Uid).Find(&user)
-	//fmt.Println("查询第一条匹配条件记录：", user)
+	db.AutoMigrate(&sql_del_struct.Userinfo{})
+	var user []sql_del_struct.Userinfo
+	db.Debug().Where(field+" = ?", content).First(&user)
+	return user[0]
+}
+func AdmininfoFind(field string, content string) []sql_del_struct.Admininfo {
+	db, err := gorm.Open("mysql", common.MysqlInfo.Id)
+	if err != nil {
+		panic(err)
+	}
+	defer func(db *gorm.DB) {
+		err := db.Close()
+		if err != nil {
+		}
+	}(db)
+	db.SingularTable(true) //严格匹配数据库名字
+	db.AutoMigrate(&sql_del_struct.Admininfo{})
+	var user []sql_del_struct.Admininfo
+	db.Debug().Where(field+" = ?", content).Find(&user)
 	return user
+}
+func AdmininfoFirst(field string, content string) sql_del_struct.Admininfo {
+	db, err := gorm.Open("mysql", common.MysqlInfo.Id)
+	if err != nil {
+		panic(err)
+	}
+	defer func(db *gorm.DB) {
+		err := db.Close()
+		if err != nil {
+		}
+	}(db)
+	db.SingularTable(true) //严格匹配数据库名字
+	db.AutoMigrate(&sql_del_struct.Admininfo{})
+	var user []sql_del_struct.Admininfo
+	db.Debug().Where(field+" = ?", content).First(&user)
+	return user[0]
 }

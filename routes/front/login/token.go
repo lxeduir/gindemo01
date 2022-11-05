@@ -19,10 +19,8 @@ type claims struct {
 
 func Setting(ctx *gin.Context) {
 	uid, err1 := ctx.GetQuery("uid")
-	var f public.Userinfo
-	var find public.Finder = &f
 	//U := public.UserInfoFind("uid", uid, public.Method[0])
-	U := find.All("uid", uid).([]public.Userinfo)
+	U := public.UserinfoFind("uid", uid)
 	if len(U) == 0 {
 		ctx.JSON(200, gin.H{
 			"code": 201,
@@ -95,10 +93,7 @@ func GetToken(tokenString string) string {
 	return claims.UserId
 }
 func SetToken(Uid string) string {
-	var f public.Userinfo
-	var find public.Finder = &f
-	//U := public.UserInfoFind("uid", Uid, public.Method[0])
-	U := find.All("uid", Uid).([]public.Userinfo)
+	U := public.UserinfoFind("uid", Uid)
 	if len(U) == 0 {
 		return "用户不存在"
 	}

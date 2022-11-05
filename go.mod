@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/gin-contrib/size v0.0.0-20220829131622-0fc0bc875336
 	github.com/gin-gonic/gin v1.8.1
 	github.com/jinzhu/gorm v1.9.16
 	gopkg.in/eapache/queue.v1 v1.1.0

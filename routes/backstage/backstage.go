@@ -1,16 +1,15 @@
 package backstage
 
 import (
-	"gindemo01/routes/front/infofind"
-
 	"github.com/gin-gonic/gin"
 )
 
 func BackMain(rback *gin.Engine) {
 	BackGroup := rback.Group("/backstage")
 	{
-		BackGroup.POST("/login", LoginAdmin)
-		BackGroup.POST("/signup", SignUpAdmin)
-		BackGroup.GET("/userinfo", infofind.UserInfo)
+		BackGroup.POST("/login", loginAdmin)
+		BackGroup.POST("/signup", signUpAdmin)
+		BackGroup.GET("/admininfo", admininfo)
+		BackGroup.GET("/del", del)
 	}
 } //登录demo

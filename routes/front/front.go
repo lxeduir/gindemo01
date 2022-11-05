@@ -2,8 +2,10 @@ package front
 
 import (
 	"gindemo01/public"
-	"gindemo01/routes/front/infofind"
 	"gindemo01/routes/front/login"
+	"gindemo01/routes/front/query"
+	"gindemo01/routes/front/upload"
+	limits "github.com/gin-contrib/size"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,14 +20,19 @@ func Main(rack *gin.Engine) {
 	frontGroup := rack.Group("/front")
 	{
 		frontGroup.GET("/", index)                                           //首页
-		frontGroup.POST("/login", login.LoginUser)                           //登录
+		frontGroup.POST("/login", login.User)                                //登录
 		frontGroup.POST("/signup", login.SignUpUser)                         //注册
 		frontGroup.GET("/signup/emailverification", login.Emailverification) //邮件验证接口
 		frontGroup.GET("/email", emails)
 		frontGroup.GET("/tokens", login.Setting)
 		frontGroup.GET("/tokentime", login.Getting)
-		frontGroup.GET("/query", infofind.QueryUserinfo)
-		frontGroup.GET("/userinfo", infofind.UserInfo)
+		frontGroup.GET("/query", query.QueryUserinfo)
+		frontGroup.GET("/userinfo", query.UserInfo)
+	}
+	upload_img := rack.Group("/front")
+	{
+		upload_img.Use(limits.RequestSizeLimiter(4 << 20))
+		upload_img.POST("/upload", upload.Img)
 	}
 }
 

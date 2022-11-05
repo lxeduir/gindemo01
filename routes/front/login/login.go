@@ -2,6 +2,7 @@ package login
 
 import (
 	"gindemo01/public"
+	"gindemo01/struct/sql_del_struct"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -14,9 +15,8 @@ type loginR struct {
 	code  int
 }
 
-func LoginUser(c *gin.Context) {
-	var u public.Userinfo
-	var find public.Finder = &u
+func User(c *gin.Context) {
+	var u sql_del_struct.Userinfo
 	var R loginR
 	R.Uid = "?"
 	R.token = "?"
@@ -26,8 +26,7 @@ func LoginUser(c *gin.Context) {
 	if err := c.ShouldBind(&u); err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{"error": err.Error()})
 	} else {
-		//U := public.UserInfoFind("email", u.Email, public.Method[0])
-		U := find.All("email", u.Email).([]public.Userinfo)
+		U := public.UserinfoFind("email", u.Email)
 		if len(U) == 0 {
 			c.JSON(201, gin.H{
 				"code": R.code,

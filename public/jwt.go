@@ -2,10 +2,11 @@ package public
 
 import (
 	"fmt"
+	"gindemo01/struct/sql_struct"
+	"github.com/dgrijalva/jwt-go"
 	"strconv"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 )
 
@@ -26,7 +27,7 @@ func parseToken(tokenString string) (*jwt.Token, *claims, error) {
 	})
 	return token, Claims, err
 }
-func GetToken(tokenString string) gin.H {
+func GetTokenUser(tokenString string) gin.H {
 	if tokenString == "" {
 		return gin.H{
 			"msg":  "token不能为空",
@@ -43,10 +44,7 @@ func GetToken(tokenString string) gin.H {
 		}
 	}
 	// 最后成功了
-	var f Userinfo
-	var find Finder = &f
-	//U := UserInfoFind("uid", claims.UserId, Method[0])
-	U := find.All("uid", claims.UserId).([]Userinfo)
+	U := UserinfoFind("uid", claims.UserId)
 	if len(U) == 0 {
 		return gin.H{
 			"msg":  "用户不存在",
@@ -57,7 +55,7 @@ func GetToken(tokenString string) gin.H {
 		"msg": 1,
 	}
 }
-func SetTokenUserinfo(U Userinfo, expireTime time.Time) string {
+func SetTokenUserinfo(U sql_struct.Userinfo, expireTime time.Time) string {
 	//expireTime := time.Now().Add(24 * time.Hour)
 	claims := &claims{
 		UserId:      U.Uid,
@@ -80,7 +78,7 @@ func SetTokenUserinfo(U Userinfo, expireTime time.Time) string {
 	// str = tokenString
 	return tokenString
 }
-func SetTokenAdmininfo(U Admininfo, expireTime time.Time) string {
+func SetTokenAdmininfo(U sql_struct.Admininfo, expireTime time.Time) string {
 	//expireTime := time.Now().Add(24 * time.Hour)
 	claims := &claims{
 		UserId:      U.Uid,
@@ -101,4 +99,33 @@ func SetTokenAdmininfo(U Admininfo, expireTime time.Time) string {
 	}
 	// str = tokenString
 	return tokenString
+}
+func GetTokenAdmin(tokenString string) gin.H {
+	if tokenString == "" {
+		return gin.H{
+			"msg":  "token不能为空",
+			"code": 200,
+		}
+	}
+	// 再来解析token，解析失败则跳出
+
+	token, claims, err := parseToken(tokenString)
+	if err != nil || !token.Valid {
+		return gin.H{
+			"msg":  "token错误",
+			"code": 200,
+		}
+	}
+	// 最后成功了
+
+	U := UserinfoFind("uid", claims.UserId)
+	if len(U) == 0 {
+		return gin.H{
+			"msg":  "用户不存在",
+			"code": 200,
+		}
+	}
+	return gin.H{
+		"msg": 1,
+	}
 }

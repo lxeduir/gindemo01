@@ -2,6 +2,7 @@ package backstage
 
 import (
 	"gindemo01/public"
+	"gindemo01/struct/sql_struct"
 	"github.com/gin-gonic/gin"
 	"math/rand"
 	"net/http"
@@ -16,8 +17,8 @@ type signUpAdminR struct {
 	token string //识别码
 }
 
-func SignUpAdmin(c *gin.Context) {
-	var u public.Admininfo
+func signUpAdmin(c *gin.Context) {
+	var u sql_struct.Admininfo
 	var U signUpAdminR
 	U.msg = 1
 	U.state = 0
@@ -33,7 +34,7 @@ func SignUpAdmin(c *gin.Context) {
 		u.State = 111
 	}
 	if public.VerifyEmailFormat(u.Email) {
-		if public.AdminInfoAdd(u) == 1 {
+		if public.AdmininfoAdd(u) == 1 {
 			U.state = 111
 			U.token = u.Token
 			U.uid = u.Uid

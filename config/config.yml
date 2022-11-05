@@ -1,0 +1,12 @@
+
+server:
+  port: 8000
+mysql:
+#  id: users:liuxun@(101.43.6.142:3306)/users?charset=utf8mb4&parseTime=True&loc=Local
+  id: users:root@(192.168.31.160:3306)/users?charset=utf8mb4&parseTime=True&loc=Local
+jwt:
+  key: api.edulx.xyz
+
+
+
+

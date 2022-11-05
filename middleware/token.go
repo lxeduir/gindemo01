@@ -23,10 +23,8 @@ func TokenGet(ctx *gin.Context) {
 		return
 	}
 	// 最后成功了
-	var u public.Userinfo
-	var find public.Finder = &u
 	//U = public.UserInfoFind("uid", Uid, public.Method[0])
-	U := find.All("uid", Uid).([]public.Userinfo)
+	U := public.UserinfoFind("uid", Uid)
 	if len(U) > 0 && U[0].Userstatus == 1 {
 		return
 	} else if U[0].Userstatus != 1 {

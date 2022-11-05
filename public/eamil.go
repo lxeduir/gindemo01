@@ -25,7 +25,7 @@ func Email(to []string, content string) bool {
 	if err != nil {
 		return false
 	}
-	fmt.Println("发信时间" + time.Now().String() + "收件人:" + to[0])
+	//fmt.Println("发信时间" + time.Now().String() + "收件人:" + to[0])
 	return true
 }
 func SignUp(addr string) string {

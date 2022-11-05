@@ -2,6 +2,7 @@ package login
 
 import (
 	"gindemo01/public"
+	"gindemo01/struct/sql_struct"
 	"github.com/gin-gonic/gin"
 	"math/rand"
 	"net/http"
@@ -19,7 +20,7 @@ type SignUpUserR struct {
 }
 
 func SignUpUser(c *gin.Context) {
-	var u public.Userinfo
+	var u sql_struct.Userinfo
 	if err := c.ShouldBind(&u); err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{"error": err.Error()})
 	} else {
@@ -38,7 +39,7 @@ func SignUpUser(c *gin.Context) {
 		if !public.VerifyEmailFormat(u.Email) {
 			R.msg = 3
 		} else {
-			R.msg = public.UserInfoAdd(u)
+			R.msg = public.UserinfoAdd(u)
 		}
 
 		if R.msg > 1 {
