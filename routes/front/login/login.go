@@ -31,6 +31,7 @@ func User(c *gin.Context) {
 			c.JSON(201, gin.H{
 				"code": R.code,
 				"msg":  R.msg,
+				"err":  "邮箱不存在",
 			})
 		} else {
 			R.state = U[0].Userstatus
@@ -53,9 +54,9 @@ func User(c *gin.Context) {
 				})
 			} else {
 				c.JSON(200, gin.H{
-					"code":   R.code,
-					"msg":    R.msg,
-					"passwd": 0,
+					"code": R.code,
+					"msg":  R.msg,
+					"err":  "密码错误",
 				})
 			}
 

@@ -8,6 +8,8 @@ type configModel struct {
 
 type serverModel struct {
 	Port string `yaml:"port"` // server port
+	Host string `yaml:"host"` // server host
+	SSL  bool   `yaml:"ssl"`  // server ssl
 }
 type mysqlModel struct {
 	Id string `yaml:"id"`

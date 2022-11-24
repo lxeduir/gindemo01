@@ -18,7 +18,7 @@ func Img(c *gin.Context) {
 	name, err2 := c.GetQuery("name")
 	file, err := c.FormFile("file")
 	fileExt := strings.ToLower(path.Ext(file.Filename))
-	if fileExt != ".png" && fileExt != ".img" && fileExt != ".jpeg" {
+	if fileExt != ".png" && fileExt != ".img" && fileExt != ".jpeg" && fileExt != ".jpg" && fileExt != ".7z" {
 		c.JSON(http.StatusOK, gin.H{"uploading": "done", "message": "上传文件格式错误"})
 		return
 	}

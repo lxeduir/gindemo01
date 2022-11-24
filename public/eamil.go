@@ -2,6 +2,7 @@ package public
 
 import (
 	"fmt"
+	"gindemo01/common"
 	"gopkg.in/eapache/queue.v1"
 	"net/smtp"
 	"regexp"
@@ -30,10 +31,15 @@ func Email(to []string, content string) bool {
 }
 func SignUp(addr string) string {
 	headText := "请点击链接完成注册"
-	curl1 := "https://api.edulx.xyz/front/signup/emailverification"
-	curl1 = "http://127.0.0.1:8000/front/signup/emailverification" //本地测试用
+	footText := "如果您没有注册过，请忽略此邮件"
+	curl1 := ""
+	if common.ServerInfo.SSL {
+		curl1 = "https://" + common.ServerInfo.Host + "/front/signup/emailverification"
+	} else {
+		curl1 = "http://" + common.ServerInfo.Host + "/front/signup/emailverification"
+	}
 	curl1 += addr
-	content := "<div><p>" + headText + "</p><a href=\"" + curl1 + "\">验证链接</a></div>"
+	content := "<div><p>" + headText + "</p><a href=\"" + curl1 + "\">验证链接</a></div>" + "<div><p>" + footText + "</p></div>"
 	return content
 }
 func QueueEmail(to string, add string) {

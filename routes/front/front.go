@@ -4,6 +4,7 @@ import (
 	"gindemo01/public"
 	"gindemo01/routes/front/login"
 	"gindemo01/routes/front/query"
+	"gindemo01/routes/front/revise"
 	"gindemo01/routes/front/upload"
 	limits "github.com/gin-contrib/size"
 	"github.com/gin-gonic/gin"
@@ -28,11 +29,8 @@ func Main(rack *gin.Engine) {
 		frontGroup.GET("/tokentime", login.Getting)
 		frontGroup.GET("/query", query.QueryUserinfo)
 		frontGroup.GET("/userinfo", query.UserInfo)
-	}
-	upload_img := rack.Group("/front")
-	{
-		upload_img.Use(limits.RequestSizeLimiter(4 << 20))
-		upload_img.POST("/upload", upload.Img)
+		frontGroup.PUT("/userinfo", revise.UserInfo)
+		frontGroup.POST("/upload", limits.RequestSizeLimiter(4<<20), upload.Img)
 	}
 }
 
