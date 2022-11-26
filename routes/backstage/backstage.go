@@ -9,7 +9,13 @@ func BackMain(rback *gin.Engine) {
 	{
 		BackGroup.POST("/login", loginAdmin)
 		BackGroup.POST("/signup", signUpAdmin)
-		BackGroup.GET("/admininfo", admininfo)
+		BackGroup.GET("/admininfo", Getting, admininfo)
 		BackGroup.GET("/del", del)
+		BackGroup.GET("/path", Getting, path)
+		BackGroup.GET("/role", GetRole)
+		BackGroup.POST("/role", PostRole)
+		BackGroup.PUT("/role", PutRole)
+		BackGroup.DELETE("/role", DelRole)
+
 	}
 } //登录demo

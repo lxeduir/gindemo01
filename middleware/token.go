@@ -32,5 +32,6 @@ func TokenGet(ctx *gin.Context) {
 		ctx.Abort()
 		return
 	}
+	ctx.Next()
 	return
 } //验证token是否有效

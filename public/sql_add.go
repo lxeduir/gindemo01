@@ -73,3 +73,37 @@ func UserImgAdd(U sql_struct.UserImg) int {
 	}
 	return 1
 }
+func UserRedisAdd(U sql_struct.UserRedis) int {
+	db, err := gorm.Open("mysql", common.MysqlInfo.Id)
+	defer func(db *gorm.DB) {
+		err := db.Close()
+		if err != nil {
+
+		}
+	}(db)
+	if err != nil {
+		panic(err)
+	}
+	db.SingularTable(true)
+	//fmt.Println(db.NewRecord(&U))
+	db.Create(&U) //将上边定义的用户数据写入到数据库user表中
+	//fmt.Println(db.NewRecord(&U))
+	return 1
+}
+func AdminRoleAdd(U sql_struct.AdminRole) int {
+	db, err := gorm.Open("mysql", common.MysqlInfo.Id)
+	defer func(db *gorm.DB) {
+		err := db.Close()
+		if err != nil {
+
+		}
+	}(db)
+	if err != nil {
+		panic(err)
+	}
+	db.SingularTable(true)
+	//fmt.Println(db.NewRecord(&U))
+	db.Create(&U) //将上边定义的用户数据写入到数据库user表中
+	//fmt.Println(db.NewRecord(&U))
+	return 1
+}

@@ -42,7 +42,7 @@ func User(c *gin.Context) {
 					R.msg = 1
 				} else if R.state == 4 {
 					R.msg = 2
-					R.Uid = "?"
+					R.Uid = "账号未激活"
 				}
 
 				c.JSON(200, gin.H{

@@ -52,7 +52,7 @@ func SignUpUser(c *gin.Context) {
 			//AntiModification := public.MD5(public.MD5(times+u.Uid+u.Token+u.Email) + u.Email + u.Uid + u.Email)
 			AntiModification := public.SetTokenUserinfo(u, time.Now().Add(time.Minute*15))
 			add := "?uid=" + u.Uid + "&token=" + u.Token + "&email=" + u.Email + "&antimodification=" + AntiModification
-			public.QueueEmail(u.Email, add)
+			public.SignUp(add)
 			c.JSON(200, gin.H{
 				"code":  200,
 				"msg":   R.msg,

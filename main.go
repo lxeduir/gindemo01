@@ -6,7 +6,10 @@ import (
 	"gindemo01/routes/backstage"
 	"gindemo01/routes/front"
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 )
+
+var DB *gorm.DB
 
 func main() {
 	if common.ReadConf() != nil {
@@ -20,5 +23,4 @@ func main() {
 	public.ErrorApi(r)
 	r.Static("/assets", "./assets")
 	r.Run(":" + common.ServerInfo.Port)
-
 }

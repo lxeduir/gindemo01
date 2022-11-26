@@ -40,7 +40,7 @@ func loginAdmin(c *gin.Context) {
 					R.msg = 2
 					R.Uid = "?"
 				}
-
+				R.token = SetToken(R.Uid)
 				c.JSON(200, gin.H{
 					"code":  R.code,
 					"msg":   R.msg,

@@ -2,6 +2,7 @@ package front
 
 import (
 	"gindemo01/public"
+	"gindemo01/routes/front/Increased"
 	"gindemo01/routes/front/login"
 	"gindemo01/routes/front/query"
 	"gindemo01/routes/front/revise"
@@ -31,6 +32,7 @@ func Main(rack *gin.Engine) {
 		frontGroup.GET("/userinfo", query.UserInfo)
 		frontGroup.PUT("/userinfo", revise.UserInfo)
 		frontGroup.POST("/upload", limits.RequestSizeLimiter(4<<20), upload.Img)
+		frontGroup.POST("/captcha", Increased.Captcha)
 	}
 }
 

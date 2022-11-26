@@ -6,7 +6,6 @@ import (
 	"gopkg.in/eapache/queue.v1"
 	"net/smtp"
 	"regexp"
-	"time"
 )
 
 var tos = queue.New()
@@ -41,27 +40,6 @@ func SignUp(addr string) string {
 	curl1 += addr
 	content := "<div><p>" + headText + "</p><a href=\"" + curl1 + "\">验证链接</a></div>" + "<div><p>" + footText + "</p></div>"
 	return content
-}
-func QueueEmail(to string, add string) {
-	tos.Add(to)
-	adds.Add(add)
-	if !flag {
-		go func() {
-			for true {
-				if tos.Length() > 0 {
-					t := fmt.Sprintf("%v", tos.Remove())
-					tos := []string{t}
-					a := fmt.Sprintf("%v", adds.Remove())
-					Email(tos, SignUp(a))
-				}
-				time.Sleep(time.Second)
-			}
-			flag = false
-		}()
-	} else {
-		flag = true
-	}
-
 }
 func VerifyEmailFormat(email string) bool {
 	//pattern := `\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*` //匹配电子邮箱

@@ -1,7 +1,6 @@
 package login
 
 import (
-	"gindemo01/public"
 	"github.com/gin-gonic/gin"
 )
 
@@ -12,13 +11,13 @@ type emailR struct {
 }
 
 func Emailverification(c *gin.Context) {
-	var E emailR
-	E.text = "验证执行未知错误，请联系管理员"
-	uid, ok1 := c.GetQuery("uid") //取不到query就返回false
-	token, ok2 := c.GetQuery("token")
-	emails, ok3 := c.GetQuery("email")
-	AntiModification, ok5 := c.GetQuery("antimodification")
-	u := public.GetTokenUser(AntiModification)
+	//var E emailR
+	//E.text = "验证执行未知错误，请联系管理员"
+	//uid, ok1 := c.GetQuery("uid") //取不到query就返回false
+	//token, ok2 := c.GetQuery("token")
+	//emails, ok3 := c.GetQuery("email")
+	//AntiModification, ok5 := c.GetQuery("antimodification")
+	//u := public.GetTokenUser(AntiModification)
 	//if u["msg"] == "token不能为空" {
 	//	E.text = "token不能为空"
 	//} else if u["msg"] == "token错误" {

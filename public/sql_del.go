@@ -2,6 +2,7 @@ package public
 
 import (
 	"gindemo01/common"
+	"gindemo01/struct/sql_del_struct"
 	"gindemo01/struct/sql_struct"
 	"github.com/jinzhu/gorm"
 )
@@ -42,5 +43,39 @@ func DelAdmininfo(uid string) int {
 	db.AutoMigrate(&sql_struct.Admininfo{})
 	db.First(&user)
 	db.Debug().Where("Uid = ?", uid).Delete(&sql_struct.Admininfo{})
+	return 1
+}
+func DelUserRedis(U sql_del_struct.UserRedis) int {
+	db, err := gorm.Open("mysql", common.MysqlInfo.Id)
+	if err != nil {
+		panic(err)
+	}
+	defer func(db *gorm.DB) {
+		err := db.Close()
+		if err != nil {
+		}
+	}(db)
+	db.SingularTable(true)
+	var user sql_del_struct.UserRedis
+	db.AutoMigrate(&sql_del_struct.UserRedis{})
+	db.First(&user)
+	db.Debug().Where("Uid = ? AND Data = ?", U.Uid, U.Data).Delete(&sql_del_struct.UserRedis{})
+	return 1
+}
+func DelAdminRole(U sql_del_struct.AdminRole) int {
+	db, err := gorm.Open("mysql", common.MysqlInfo.Id)
+	if err != nil {
+		panic(err)
+	}
+	defer func(db *gorm.DB) {
+		err := db.Close()
+		if err != nil {
+		}
+	}(db)
+	db.SingularTable(true)
+	var user sql_del_struct.AdminRole
+	db.AutoMigrate(&sql_del_struct.AdminRole{})
+	db.First(&user)
+	db.Debug().Where("role_id = ?", U.RoleId).Delete(&sql_del_struct.AdminRole{})
 	return 1
 }

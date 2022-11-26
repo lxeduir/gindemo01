@@ -70,7 +70,8 @@ func Getting(ctx *gin.Context) {
 		return
 	}
 	// 最后成功了
-	ctx.JSON(http.StatusOK, gin.H{"code": 200, "id": claims.UserId, "msg": "认证通过"})
+	ctx.Set("JwtUid", claims.UserId)
+	ctx.Next()
 
 }
 func ParseToken(tokenString string) (*jwt.Token, *claims, error) {
@@ -92,21 +93,19 @@ func GetToken(tokenString string) string {
 	// 最后成功了
 	return claims.UserId
 }
-
 func SetToken(Uid string) string {
-	U := public.UserinfoFind("uid", Uid)
-	//U := query.All("uid", Uid).([]sql_struct.Admininfo)
+	U := public.AdmininfoFind("uid", Uid)
 	if len(U) == 0 {
 		return "用户不存在"
 	}
-	expireTime := time.Now().Add(10 * time.Minute)
+	expireTime := time.Now().Add(time.Minute * 10)
 	claims := &claims{
 		UserId: Uid,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expireTime.Unix(), //过期时间
 			IssuedAt:  time.Now().Unix(),
 			Issuer:    "101,43,6,14", // 签名颁发者
-			Subject:   "user token",  //签名主题
+			Subject:   "Admin token", //签名主题
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

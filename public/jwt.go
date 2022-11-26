@@ -126,6 +126,6 @@ func GetTokenAdmin(tokenString string) gin.H {
 		}
 	}
 	return gin.H{
-		"msg": 1,
+		"uid": U[0].Uid,
 	}
 }
