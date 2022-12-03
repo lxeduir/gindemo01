@@ -20,18 +20,16 @@ type claims struct {
 func Setting(ctx *gin.Context) {
 	uid, err1 := ctx.GetQuery("uid")
 	//U := public.UserInfoFind("uid", uid, public.Method[0])
-	U := public.UserinfoFind("uid", uid)
+	U := public.UserinfoFind("uid = ?", uid)
 	if len(U) == 0 {
-		ctx.JSON(200, gin.H{
-			"code": 201,
-			"msg":  "uid不存在",
+		ctx.JSON(201, gin.H{
+			"msg": "uid不存在",
 		})
 		return
 	}
 	if !err1 {
-		ctx.JSON(200, gin.H{
-			"code": 201,
-			"msg":  "缺少必需参数",
+		ctx.JSON(201, gin.H{
+			"msg": "缺少必需参数",
 		})
 		return
 	}
@@ -58,19 +56,19 @@ func Getting(ctx *gin.Context) {
 	tokenString := ctx.GetHeader("Authorization") //从header中取Authorization这个key，再与刚刚的token进行比对
 	// 先判断取到的是否为空，为空则跳出
 	if tokenString == "" {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "token为空"})
+		ctx.JSON(http.StatusUnauthorized, gin.H{"msg": "token为空"})
 		ctx.Abort()
 		return
 	}
 	// 再来解析token，解析失败则跳出
 	token, claims, err := ParseToken(tokenString)
 	if err != nil || !token.Valid {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足"})
+		ctx.JSON(http.StatusUnauthorized, gin.H{"msg": "权限不足"})
 		ctx.Abort()
 		return
 	}
 	// 最后成功了
-	ctx.JSON(http.StatusOK, gin.H{"code": 200, "id": claims.UserId, "msg": "认证通过"})
+	ctx.JSON(http.StatusOK, gin.H{"id": claims.UserId, "msg": "认证通过"})
 
 }
 func ParseToken(tokenString string) (*jwt.Token, *claims, error) {
@@ -93,7 +91,7 @@ func GetToken(tokenString string) string {
 	return claims.UserId
 }
 func SetToken(Uid string) string {
-	U := public.UserinfoFind("uid", Uid)
+	U := public.UserinfoFind("uid = ?", Uid)
 	if len(U) == 0 {
 		return "用户不存在"
 	}

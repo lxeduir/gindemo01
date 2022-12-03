@@ -2,6 +2,7 @@ package backstage
 
 import (
 	"gindemo01/public"
+	"gindemo01/struct/sql_del_struct"
 	"gindemo01/struct/sql_struct"
 	"github.com/gin-gonic/gin"
 	"math/rand"
@@ -20,18 +21,23 @@ type signUpAdminR struct {
 func signUpAdmin(c *gin.Context) {
 	var u sql_struct.Admininfo
 	var U signUpAdminR
+	var s sql_del_struct.Admininfo
 	U.msg = 1
 	U.state = 0
-	U.token = "?"
-	U.uid = "?"
+	U.token = "err"
+	U.uid = "err"
 	if err := c.ShouldBind(&u); err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{"error": err.Error()})
 	} else {
 		r := rand.New(rand.NewSource(time.Now().UnixNano()))
 		u.Uid = strconv.FormatInt((time.Now().Unix()-660000000)*100+int64(r.Intn(128)), 10)
 		u.Passwd = public.MD5(u.Passwd + u.Uid)
-		u.Token = public.SetTokenAdmininfo(u, time.Now().Add(7*24*time.Hour))
+		s.Uid = u.Uid
 		u.State = 111
+		s.State = u.State
+		s.RoleId = 111
+		u.Token = SetTokenAdmininfo(s, time.Hour)
+
 	}
 	if public.VerifyEmailFormat(u.Email) {
 		if public.AdmininfoAdd(u) == 1 {

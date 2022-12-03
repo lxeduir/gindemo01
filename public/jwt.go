@@ -4,14 +4,12 @@ import (
 	"fmt"
 	"gindemo01/struct/sql_struct"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 	"strconv"
 	"time"
-
-	"github.com/gin-gonic/gin"
 )
 
 var jwtkey = []byte("api.edulx.xyz")
-var str string
 
 type claims struct {
 	UserId      string
@@ -44,7 +42,7 @@ func GetTokenUser(tokenString string) gin.H {
 		}
 	}
 	// 最后成功了
-	U := UserinfoFind("uid", claims.UserId)
+	U := UserinfoFind("uid = ?", claims.UserId)
 	if len(U) == 0 {
 		return gin.H{
 			"msg":  "用户不存在",
@@ -77,55 +75,4 @@ func SetTokenUserinfo(U sql_struct.Userinfo, expireTime time.Time) string {
 	}
 	// str = tokenString
 	return tokenString
-}
-func SetTokenAdmininfo(U sql_struct.Admininfo, expireTime time.Time) string {
-	//expireTime := time.Now().Add(24 * time.Hour)
-	claims := &claims{
-		UserId:      U.Uid,
-		Permissions: string(U.State),
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: expireTime.Unix(), //过期时间
-			IssuedAt:  time.Now().Unix(),
-			Issuer:    "101,43,6,14", // 签名颁发者
-			Subject:   "user token",  //签名主题
-		},
-	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	// fmt.Println(token)
-	tokenString, err := token.SignedString(jwtkey)
-	if err != nil {
-		fmt.Println(err)
-		return "error"
-	}
-	// str = tokenString
-	return tokenString
-}
-func GetTokenAdmin(tokenString string) gin.H {
-	if tokenString == "" {
-		return gin.H{
-			"msg":  "token不能为空",
-			"code": 200,
-		}
-	}
-	// 再来解析token，解析失败则跳出
-
-	token, claims, err := parseToken(tokenString)
-	if err != nil || !token.Valid {
-		return gin.H{
-			"msg":  "token错误",
-			"code": 200,
-		}
-	}
-	// 最后成功了
-
-	U := UserinfoFind("uid", claims.UserId)
-	if len(U) == 0 {
-		return gin.H{
-			"msg":  "用户不存在",
-			"code": 200,
-		}
-	}
-	return gin.H{
-		"uid": U[0].Uid,
-	}
 }

@@ -12,7 +12,6 @@ type loginR struct {
 	token string
 	msg   int
 	state int
-	code  int
 }
 
 func User(c *gin.Context) {
@@ -22,16 +21,14 @@ func User(c *gin.Context) {
 	R.token = "?"
 	R.state = 0
 	R.msg = 0
-	R.code = 200
 	if err := c.ShouldBind(&u); err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{"error": err.Error()})
 	} else {
-		U := public.UserinfoFind("email", u.Email)
+		U := public.UserinfoFind("email = ?", u.Email)
 		if len(U) == 0 {
 			c.JSON(201, gin.H{
-				"code": R.code,
-				"msg":  R.msg,
-				"err":  "邮箱不存在",
+				"msg": R.msg,
+				"err": "邮箱不存在",
 			})
 		} else {
 			R.state = U[0].Userstatus
@@ -46,7 +43,6 @@ func User(c *gin.Context) {
 				}
 
 				c.JSON(200, gin.H{
-					"code":  R.code,
 					"msg":   R.msg,
 					"state": R.state,
 					"uid":   R.Uid,
@@ -54,9 +50,8 @@ func User(c *gin.Context) {
 				})
 			} else {
 				c.JSON(200, gin.H{
-					"code": R.code,
-					"msg":  R.msg,
-					"err":  "密码错误",
+					"msg": R.msg,
+					"err": "密码错误",
 				})
 			}
 

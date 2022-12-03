@@ -19,31 +19,29 @@ type super struct {
 }
 
 func path(c *gin.Context) {
-	uid, ok1 := c.Get("JwtUid")
-	Uid := uid.(string)
+	cla, ok1 := c.Get("admininfo")
+	Cla := cla.(Claimadmins)
 	if ok1 != true {
-		c.JSON(200, gin.H{"code": 200, "msg": "uid不能为空"})
+		c.JSON(200, gin.H{"msg": "uid不能为空"})
 		return
 	} else {
-		u := public.AdmininfoFirst("uid", Uid)
-		paths := public.AdminPathFind()
-		var rpath []sql_del_struct.AdminPath
+		paths := public.AdminRoutFind("rout_id LIKE ?", "%")
+		var rpath []sql_del_struct.AdminRout
 		for _, v := range paths {
-			if u.State >= v.Permission {
+			if Permissionvalidation(Cla.Mps, "rout", v.RoutId, 1) {
 				rpath = append(rpath, v)
 			}
 		}
 		rrpath := pathmake(rpath)
 		c.JSON(200, gin.H{
-			"code": 200,
-			"uid":  Uid,
+			"uid":  Cla.UserId,
 			"list": rrpath,
 		})
-		return
 	}
+	return
 }
 
-func pathmake(path []sql_del_struct.AdminPath) interface{} {
+func pathmake(path []sql_del_struct.AdminRout) interface{} {
 	var rpath []super
 	for _, v := range path {
 		if v.Super == "/" {

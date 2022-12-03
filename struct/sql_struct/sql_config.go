@@ -1,6 +1,5 @@
 package sql_struct
 
-// sqlUserId 数据库账号密码
 type Userinfo struct {
 	Uid         string
 	Email       string
@@ -19,6 +18,7 @@ type Admininfo struct {
 	Passwd   string
 	Token    string
 	State    int
+	RoleId   int
 	//DeletedAt string
 }
 type UserImg struct {
@@ -40,7 +40,7 @@ type UserLog struct {
 	data string
 	time string `gorm:"autoCreateTime"`
 }
-type AdminPath struct {
+type AdminRout struct {
 	RoutId     int
 	Name       string
 	Title      string
@@ -53,18 +53,24 @@ type AdminPath struct {
 	Utime      string `gorm:"autoUpdateTime"`
 }
 type AdminRole struct {
-	RoleId      int
-	Name        string
-	Description string
-	Ctime       string `gorm:"autoCreateTime"`
-	Utime       string `gorm:"autoUpdateTime"`
-	Permission  int
-	Orders      int
+	RoleId         string
+	Name           string
+	Description    string
+	CreateBy       string
+	CreateTime     string `gorm:"autoCreateTime"`
+	UpdateBy       string
+	UpdateTime     string `gorm:"autoUpdateTime"`
+	PermissionJson string
+	Orders         int
 }
 type AdminPermission struct {
 	PermissionId   int
 	Permissions    string
-	PermissionJson []Permission `gorm:"type:json"`
+	PermissionJson string
+	CreateBy       string
+	CreateTime     string `gorm:"autoCreateTime"`
+	UpdateBy       string
+	UpdateTime     string `gorm:"autoUpdateTime"`
 }
 
 type Permission struct {

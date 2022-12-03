@@ -12,8 +12,7 @@ func UserInfo(c *gin.Context) {
 	token := c.GetHeader("Authorization")
 	if !ok1 {
 		c.JSON(201, gin.H{
-			"msg":  "uid?",
-			"code": 201,
+			"msg": "uid?",
 		})
 	} else {
 		msg := public.GetTokenUser(token)
@@ -24,7 +23,6 @@ func UserInfo(c *gin.Context) {
 			c.JSON(200, gin.H{
 				"list": u,
 				"msg":  msg["msg"],
-				"code": 200,
 			})
 		} else {
 			c.JSON(200, msg)

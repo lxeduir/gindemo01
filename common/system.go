@@ -8,7 +8,8 @@ import (
 	"path"
 )
 
-//LoadConfigInformation load config information for application
+// LoadConfigInformation load config information for application
+var ConfigInfos configModel
 
 func loadConfigInformation(configPath string) (err error) {
 
@@ -57,8 +58,8 @@ func loadConfigInformation(configPath string) (err error) {
 	// server information
 	MysqlInfo = ConfigInfo.Mysql
 	ServerInfo = ConfigInfo.Server
-	JWTinfo = ConfigInfo.jwt
-
+	Jwtinfo = ConfigInfo.Jwt
+	ConfigInfos = *ConfigInfo
 	return nil
 
 }

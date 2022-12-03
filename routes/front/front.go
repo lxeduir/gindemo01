@@ -41,7 +41,6 @@ func index(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"state": 1,
 		"msg":   "api在线中",
-		"code":  200,
 	})
 } //访问api根目录
 func emails(c *gin.Context) {

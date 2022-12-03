@@ -9,5 +9,5 @@ var (
 
 	MysqlInfo *mysqlModel
 
-	JWTinfo *jwtModel
+	Jwtinfo *jwtModel
 )

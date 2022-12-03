@@ -5,9 +5,25 @@ server:
   host: 127.0.0.1:8000
 mysql:
   id: users:liuxun@(101.43.6.142:3306)/users?charset=utf8mb4&parseTime=True&loc=Local
+  username: users
+  password: liuxun
+  ipaddress: 101.43.6.142
+  port: 3306
 #  id: users:root@(192.168.31.4:3306)/users?charset=utf8mb4&parseTime=True&loc=Local
+  MAX_OPEN_CONS: 100
+  MAX_IDLE_CONS: 20
+  MAX_LIFETIME: 100
 jwt:
   key: api.edulx.xyz
+  timeout: 3600
+redis:
+  host: 101.43.6.142
+  port: 6379
+  password: 123456
+  user_db: 1
+  admin_db: 0
+
+
 
 
 

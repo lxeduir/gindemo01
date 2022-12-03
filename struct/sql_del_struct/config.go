@@ -19,6 +19,7 @@ type Admininfo struct {
 	Passwd    string
 	Token     string
 	State     int
+	RoleId    int
 	DeletedAt string `json:"DeletedAt,omitempty"`
 }
 type UserRedis struct {
@@ -36,7 +37,7 @@ type UserLog struct {
 	time      string `gorm:"autoCreateTime"`
 	DeletedAt string `json:"DeletedAt,omitempty"`
 }
-type AdminPath struct {
+type AdminRout struct {
 	RoutId     int
 	Name       string
 	Title      string
@@ -50,24 +51,24 @@ type AdminPath struct {
 	DeletedAt  string `json:"DeletedAt,omitempty"`
 }
 type AdminRole struct {
-	RoleId      int
-	Name        string
-	Description string
-	Ctime       string `gorm:"autoCreateTime"`
-	Utime       string `gorm:"autoUpdateTime"`
-	Permission  int
-	Orders      int
-	DeletedAt   string `json:"DeletedAt,omitempty"`
+	RoleId         string
+	Name           string
+	Description    string
+	CreateBy       string
+	CreateTime     string `gorm:"autoCreateTime"`
+	UpdateBy       string
+	UpdateTime     string `gorm:"autoUpdateTime"`
+	PermissionJson string
+	Orders         int
+	DeletedAt      string `json:"DeletedAt,omitempty"`
 }
 type AdminPermission struct {
 	PermissionId   int
 	Permissions    string
-	PermissionJson []Permission `gorm:"type:json"`
-	DeletedAt      string       `json:"DeletedAt,omitempty"`
-}
-
-type Permission struct {
-	Type string `json:"type"`
-	Id   string `json:"type_id"`
-	P    string `json:"permission"`
+	PermissionJson string
+	CreateBy       string
+	CreateTime     string `gorm:"autoCreateTime"`
+	UpdateBy       string
+	UpdateTime     string `gorm:"autoUpdateTime"`
+	DeletedAt      string `json:"DeletedAt,omitempty"`
 }

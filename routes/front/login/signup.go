@@ -44,7 +44,6 @@ func SignUpUser(c *gin.Context) {
 
 		if R.msg > 1 {
 			c.JSON(200, gin.H{
-				"code":  200,
 				"msg":   R.msg,
 				"state": R.state,
 			})
@@ -54,7 +53,6 @@ func SignUpUser(c *gin.Context) {
 			add := "?uid=" + u.Uid + "&token=" + u.Token + "&email=" + u.Email + "&antimodification=" + AntiModification
 			public.SignUp(add)
 			c.JSON(200, gin.H{
-				"code":  200,
 				"msg":   R.msg,
 				"state": R.state,
 				"token": R.token,

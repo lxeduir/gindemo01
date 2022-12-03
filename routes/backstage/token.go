@@ -2,119 +2,116 @@ package backstage
 
 import (
 	"fmt"
+	"gindemo01/common"
 	"gindemo01/public"
+	"gindemo01/struct/sql_del_struct"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"net/http"
+	"strconv"
 	"time"
 )
 
-var jwtkey = []byte("api.edulx.xyz")
-var str string
+var jwtkey = []byte("")
 
-type claims struct {
-	UserId string
+type claimadmin struct {
+	UserId     string
+	RoleId     string
+	Userstatus string
+	Mps        map[string]map[int]int
 	jwt.StandardClaims
 }
+type Claimadmins struct {
+	UserId     string
+	RoleId     string
+	Userstatus string
+	Mps        map[string]map[int]int
+}
 
-func Setting(ctx *gin.Context) {
-	uid, err1 := ctx.GetQuery("uid")
-	U := public.UserinfoFind("uid", uid)
-
-	if len(U) == 0 {
-		ctx.JSON(200, gin.H{
-			"code": 201,
-			"msg":  "uid不存在",
-		})
-		return
-	}
-	if !err1 {
-		ctx.JSON(200, gin.H{
-			"code": 201,
-			"msg":  "缺少必需参数",
-		})
-		return
-	}
-	expireTime := time.Now().Add(10 * time.Minute)
-	claims := &claims{
-		UserId: uid,
+func SetTokenAdmininfo(U sql_del_struct.Admininfo, expireTime time.Duration) string {
+	mp := public.Authmap(strconv.Itoa(U.RoleId))
+	claims := &claimadmin{
+		UserId:     U.Uid,
+		RoleId:     strconv.Itoa(U.RoleId),
+		Userstatus: strconv.Itoa(U.State),
+		Mps:        mp,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: expireTime.Unix(), //过期时间
+			ExpiresAt: time.Now().Add(time.Hour * 24).Unix(), //过期时间
 			IssuedAt:  time.Now().Unix(),
-			Issuer:    "101.43.6.14", // 签名颁发者
+			Issuer:    "101,43,6,14", // 签名颁发者
 			Subject:   "user token",  //签名主题
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	// fmt.Println(token)
-	tokenString, err := token.SignedString(jwtkey)
-	if err != nil {
-		fmt.Println(err)
-	}
-	// str = tokenString
-	ctx.JSON(http.StatusOK, gin.H{"code": 200, "token": tokenString})
-}
-func Getting(ctx *gin.Context) {
-	tokenString := ctx.GetHeader("Authorization") //从header中取Authorization这个key，再与刚刚的token进行比对
-	// 先判断取到的是否为空，为空则跳出
-	if tokenString == "" {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "token为空"})
-		ctx.Abort()
-		return
-	}
-	// 再来解析token，解析失败则跳出
-	token, claims, err := ParseToken(tokenString)
-	if err != nil || !token.Valid {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足"})
-		ctx.Abort()
-		return
-	}
-	// 最后成功了
-	ctx.Set("JwtUid", claims.UserId)
-	ctx.Next()
-
-}
-func ParseToken(tokenString string) (*jwt.Token, *claims, error) {
-	Claims := &claims{}
-	token, err := jwt.ParseWithClaims(tokenString, Claims, func(token *jwt.Token) (i interface{}, err error) {
-		return jwtkey, nil
-	})
-	return token, Claims, err
-}
-func GetToken(tokenString string) string {
-	if tokenString == "" {
-		return "token不能为空"
-	}
-	// 再来解析token，解析失败则跳出
-	token, claims, err := ParseToken(tokenString)
-	if err != nil || !token.Valid {
-		return "token错误"
-	}
-	// 最后成功了
-	return claims.UserId
-}
-func SetToken(Uid string) string {
-	U := public.AdmininfoFind("uid", Uid)
-	if len(U) == 0 {
-		return "用户不存在"
-	}
-	expireTime := time.Now().Add(time.Minute * 10)
-	claims := &claims{
-		UserId: Uid,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: expireTime.Unix(), //过期时间
-			IssuedAt:  time.Now().Unix(),
-			Issuer:    "101,43,6,14", // 签名颁发者
-			Subject:   "Admin token", //签名主题
-		},
-	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	// fmt.Println(token)
+	jwtkey = []byte(common.Jwtinfo.Key)
 	tokenString, err := token.SignedString(jwtkey)
 	if err != nil {
 		fmt.Println(err)
 		return "error"
 	}
 	// str = tokenString
+	err = public.RedisSet(U.Uid, tokenString, expireTime)
+	if err != nil {
+		return "reads-error"
+	}
 	return tokenString
+}
+func GetTokenAdmin(tokenString string) Claimadmins {
+	var c Claimadmins
+	token, c2, err := parseToken(tokenString)
+	if err != nil || !token.Valid {
+		return Claimadmins{
+			UserId: "error",
+		}
+	} else {
+		c.UserId = c2.UserId
+		c.Userstatus = c2.Userstatus
+		c.RoleId = c2.RoleId
+		c.Mps = c2.Mps
+		return c
+	}
+}
+func parseToken(tokenString string) (*jwt.Token, *claimadmin, error) {
+	jwtkey = []byte(common.Jwtinfo.Key)
+	Claims := &claimadmin{}
+	token, err := jwt.ParseWithClaims(tokenString, Claims, func(token *jwt.Token) (i interface{}, err error) {
+		return jwtkey, nil
+	})
+	return token, Claims, err
+}
+func getting(c *gin.Context) {
+	authorizations := c.GetHeader("Authorization")
+	cla := GetTokenAdmin(authorizations)
+	if cla.UserId == "error" {
+		c.JSON(200, gin.H{
+			"code":  200,
+			"error": "token",
+		})
+		c.Abort()
+	} else {
+		redisToken, err := public.RedisGet(cla.UserId)
+		if err != nil {
+			c.JSON(200, gin.H{
+				"err": "redis",
+			})
+			c.Abort()
+		} else {
+			if redisToken == authorizations {
+				c.Set("admininfo", cla)
+				err = public.RedisSet(cla.UserId, redisToken, time.Hour)
+				if err != nil {
+					c.JSON(200, gin.H{
+						"err": "redis",
+					})
+					c.Abort()
+				} else {
+					c.Next()
+				}
+			} else {
+				c.JSON(200, gin.H{
+					"err": "登录过期",
+				})
+				c.Abort()
+			}
+		}
+	}
 }

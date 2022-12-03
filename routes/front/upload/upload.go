@@ -22,7 +22,8 @@ func Img(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"uploading": "done", "message": "上传文件格式错误"})
 		return
 	}
-	U := public.UserinfoFind("uid", uid)
+	U := public.UserinfoFind("uid = ?"+
+		"", uid)
 	if len(U) == 0 {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "用户不存在",
