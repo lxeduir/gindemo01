@@ -4,8 +4,10 @@ import (
 	"gindemo01/public"
 	"gindemo01/routes/front/Increased"
 	"gindemo01/routes/front/login"
+	"gindemo01/routes/front/personal"
 	"gindemo01/routes/front/query"
 	"gindemo01/routes/front/revise"
+	"gindemo01/routes/front/token"
 	"gindemo01/routes/front/upload"
 	limits "github.com/gin-contrib/size"
 	"github.com/gin-gonic/gin"
@@ -21,10 +23,9 @@ func Main(rack *gin.Engine) {
 	rack.LoadHTMLFiles("docs/html/index.html")
 	frontGroup := rack.Group("/front")
 	{
-		frontGroup.GET("/", index)                                           //首页
-		frontGroup.POST("/login", login.User)                                //登录
-		frontGroup.POST("/signup", login.SignUpUser)                         //注册
-		frontGroup.GET("/signup/emailverification", login.Emailverification) //邮件验证接口
+		frontGroup.GET("/", index)                   //首页
+		frontGroup.POST("/login", login.User)        //登录
+		frontGroup.POST("/signup", login.SignUpUser) //注册
 		frontGroup.GET("/email", emails)
 		frontGroup.GET("/tokens", login.Setting)
 		frontGroup.GET("/tokentime", login.Getting)
@@ -33,6 +34,8 @@ func Main(rack *gin.Engine) {
 		frontGroup.PUT("/userinfo", revise.UserInfo)
 		frontGroup.POST("/upload", limits.RequestSizeLimiter(4<<20), upload.Img)
 		frontGroup.POST("/captcha", Increased.Captcha)
+		frontGroup.POST("/personal", token.Getting, personal.PostPersonal)
+		frontGroup.GET("/personal", token.Getting, personal.GetPersonal)
 	}
 }
 

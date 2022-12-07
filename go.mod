@@ -8,6 +8,7 @@ require (
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/jinzhu/gorm v1.9.16
+	github.com/robfig/cron/v3 v3.0.1
 	gopkg.in/eapache/queue.v1 v1.1.0
 	gopkg.in/yaml.v2 v2.4.0
 )
@@ -29,6 +30,7 @@ require (
 	github.com/onsi/ginkgo v1.16.5 // indirect
 	github.com/onsi/gomega v1.24.1 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.1 // indirect
+	github.com/typa01/go-utils v0.0.0-20181126045345-a86b05b01c1e // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	golang.org/x/crypto v0.0.0-20210711020723-a769d52b0f97 // indirect
 	golang.org/x/net v0.2.0 // indirect

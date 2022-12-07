@@ -2,12 +2,13 @@ package backstage
 
 import (
 	"gindemo01/public"
+	"gindemo01/public/sql"
 	"github.com/gin-gonic/gin"
 	"strconv"
 )
 
 func Authentication(c *gin.Context) {
-	cla, ok1 := c.Get("admininfo")
+	cla, ok1 := c.Get("cla")
 	Cla := cla.(Claimadmins)
 	if ok1 != true {
 		c.JSON(200, gin.H{"msg": "uid不能为空"})
@@ -16,8 +17,8 @@ func Authentication(c *gin.Context) {
 		types := c.GetHeader("type")
 		typeId, _ := strconv.Atoi(c.GetHeader("type_id"))
 		operate, _ := strconv.Atoi(c.GetHeader("operate"))
-		u := public.AdmininfoFirst("uid", Cla.UserId)
-		s := public.AdminRoleFind("role_id = ?", strconv.Itoa(u.RoleId))
+		u := sql.AdmininfoFirst("uid", Cla.UserId)
+		s := sql.AdminRoleFind("role_id = ?", strconv.Itoa(u.RoleId))
 		if len(s) == 0 {
 			c.JSON(200, gin.H{
 				"uid":     Cla.UserId,

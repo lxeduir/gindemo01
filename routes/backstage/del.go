@@ -1,7 +1,7 @@
 package backstage
 
 import (
-	"gindemo01/public"
+	"gindemo01/public/sql"
 	"github.com/gin-gonic/gin"
 )
 
@@ -12,7 +12,7 @@ func del(c *gin.Context) {
 			"msg": "缺少必须参数",
 		})
 	} else {
-		m := public.DelAdmininfo(uid)
+		m := sql.DelAdmininfo(uid)
 		c.JSON(200, gin.H{
 			"msg": m,
 		})

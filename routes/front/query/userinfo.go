@@ -2,6 +2,7 @@ package query
 
 import (
 	"gindemo01/public"
+	"gindemo01/public/sql"
 	"gindemo01/struct/sql_del_struct"
 	"github.com/gin-gonic/gin"
 )
@@ -18,7 +19,7 @@ func UserInfo(c *gin.Context) {
 		msg := public.GetTokenUser(token)
 		if msg["msg"] == 1 {
 
-			u = public.UserinfoFirst("uid", uid)
+			u = sql.UserinfoFirst("uid", uid)
 			u.Passwd = ""
 			c.JSON(200, gin.H{
 				"list": u,

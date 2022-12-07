@@ -5,11 +5,9 @@ type Userinfo struct {
 	Email       string
 	Username    string
 	Passwd      string
-	Token       string
 	Permissions string
 	Userstatus  int
 	Signtime    string
-	//DeletedAt   string
 }
 type Admininfo struct {
 	Uid      string
@@ -77,4 +75,16 @@ type Permission struct {
 	Type string `json:"type"`
 	Id   string `json:"type_id"`
 	P    string `json:"permission"`
+}
+type Affairs struct {
+	AffairsId   string
+	Uid         string
+	AffairsType string
+	AffairsData string
+	State       string
+	DisposeTime string
+	CreateBy    string
+	CreateTime  string `gorm:"autoCreateTime"`
+	UpdateBy    string
+	UpdateTime  string `gorm:"autoUpdateTime"`
 }

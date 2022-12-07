@@ -2,9 +2,9 @@ package backstage
 
 import (
 	"gindemo01/public"
+	"gindemo01/public/sql"
 	"gindemo01/struct/sql_del_struct"
 	"github.com/gin-gonic/gin"
-	"net/http"
 	"time"
 )
 
@@ -22,11 +22,11 @@ func loginAdmin(c *gin.Context) {
 	R.token = "?"
 	R.state = 0
 	if err := c.ShouldBind(&u); err != nil {
-		c.JSON(http.StatusBadGateway, gin.H{"error": err.Error()})
+		c.JSON(401, gin.H{"error": err.Error()})
 	} else {
-		U := public.AdmininfoFind("email = ?", u.Email)
+		U := sql.AdmininfoFind("email = ?", u.Email)
 		if len(U) == 0 {
-			c.JSON(http.StatusBadRequest, gin.H{"msg": "用户不存在"})
+			c.JSON(201, gin.H{"msg": "用户不存在"})
 		} else {
 			R.state = U[0].State
 			R.Uid = U[0].Uid

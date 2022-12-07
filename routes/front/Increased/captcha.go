@@ -1,10 +1,11 @@
 package Increased
 
 import (
-	"fmt"
 	"gindemo01/public"
-	"gindemo01/struct/sql_struct"
+	"gindemo01/public/redis"
 	"github.com/gin-gonic/gin"
+	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -13,43 +14,26 @@ type reception struct {
 }
 
 func Captcha(c *gin.Context) {
-	var captcha sql_struct.UserRedis
-	var R reception
-	if err := c.ShouldBind(&R); err != nil {
-		c.JSON(400, gin.H{
-			"err": err.Error(),
-		})
+	var rec reception
+	if err := c.ShouldBind(&rec); err != nil {
+		c.JSON(http.StatusOK, gin.H{"err": "参数错误"})
 	} else {
-		u := public.UserinfoFind("email = ?", R.Email)
-		if len(u) == 0 {
-			c.JSON(400, gin.H{
-				"err": "邮箱不存在",
-			})
-		} else {
-			captcha.Uid = u[0].Uid
-			captcha.Data = public.Captcha()
-			captcha.Type = "验证码"
-			captcha.CreateTime = time.Now().String()[0:19]
-			captcha.ExpirationTime = time.Now().Add(time.Minute * 5).String()[0:19]
-			public.UserRedisAdd(captcha)
-			c.JSON(200, gin.H{
-				"list": captcha,
-			})
+		c2, _ := redis.Get(rec.Email)
+		if c2 != "" {
+			ic, _ := strconv.ParseInt(c2, 10, 64)
+			t := 60 - (time.Now().Unix() - ic)
+			c.JSON(http.StatusOK, gin.H{"err": "请" + strconv.FormatInt(t, 10) + "秒后再试"})
+			return
 		}
-	}
-	captchaExpirationTime()
-}
-func captchaExpirationTime() {
-	u := public.UserRedisFind("type", "验证码")
-	for _, v := range u {
-		formatTime, err := time.Parse("2006-01-02T15:04:05+08:00", v.ExpirationTime)
+		caps := redis.SetCaptcha(rec.Email)
+		err = redis.Set(rec.Email, strconv.FormatInt(time.Now().Unix(), 10), time.Minute)
 		if err != nil {
-			fmt.Println(err)
-		} else {
-			if formatTime.Unix()-time.Now().Unix()-28800 < 0 {
-				public.DelUserRedis(v)
-			}
-
+			c.JSON(http.StatusOK, gin.H{"err": "验证码获取失败"})
+			return
 		}
+		to := []string{rec.Email}
+		public.Email(to, public.SignUp(caps))
+		c.JSON(http.StatusOK, gin.H{"msg": "验证码获取成功"})
+
 	}
 }

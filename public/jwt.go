@@ -2,6 +2,7 @@ package public
 
 import (
 	"fmt"
+	"gindemo01/public/sql"
 	"gindemo01/struct/sql_struct"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
@@ -42,7 +43,7 @@ func GetTokenUser(tokenString string) gin.H {
 		}
 	}
 	// 最后成功了
-	U := UserinfoFind("uid = ?", claims.UserId)
+	U := sql.UserinfoFind("uid = ?", claims.UserId)
 	if len(U) == 0 {
 		return gin.H{
 			"msg":  "用户不存在",

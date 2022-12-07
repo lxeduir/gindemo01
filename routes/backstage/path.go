@@ -1,7 +1,7 @@
 package backstage
 
 import (
-	"gindemo01/public"
+	"gindemo01/public/sql"
 	"gindemo01/struct/sql_del_struct"
 	"github.com/gin-gonic/gin"
 )
@@ -19,13 +19,13 @@ type super struct {
 }
 
 func path(c *gin.Context) {
-	cla, ok1 := c.Get("admininfo")
+	cla, ok1 := c.Get("cla")
 	Cla := cla.(Claimadmins)
 	if ok1 != true {
 		c.JSON(200, gin.H{"msg": "uid不能为空"})
 		return
 	} else {
-		paths := public.AdminRoutFind("rout_id LIKE ?", "%")
+		paths := sql.AdminRoutFind("rout_id LIKE ?", "%")
 		var rpath []sql_del_struct.AdminRout
 		for _, v := range paths {
 			if Permissionvalidation(Cla.Mps, "rout", v.RoutId, 1) {

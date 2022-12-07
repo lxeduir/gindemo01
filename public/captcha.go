@@ -10,6 +10,10 @@ func Captcha() string {
 	rot := ""
 	rand.Seed(time.Now().Unix())
 	r := rand.Int()
-	rot = rot + strconv.Itoa(r%100000)
+	r = r % 1000000
+	if r < 100000 {
+		r += 100000
+	}
+	rot = rot + strconv.Itoa(r)
 	return rot
 }

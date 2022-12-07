@@ -2,6 +2,7 @@ package backstage
 
 import (
 	"gindemo01/public"
+	"gindemo01/public/sql"
 	"gindemo01/struct/sql_del_struct"
 	"gindemo01/struct/sql_struct"
 	"github.com/gin-gonic/gin"
@@ -40,7 +41,7 @@ func signUpAdmin(c *gin.Context) {
 
 	}
 	if public.VerifyEmailFormat(u.Email) {
-		if public.AdmininfoAdd(u) == 1 {
+		if sql.AdmininfoAdd(u) == 1 {
 			U.state = 111
 			U.token = u.Token
 			U.uid = u.Uid

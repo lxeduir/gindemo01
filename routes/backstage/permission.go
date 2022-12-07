@@ -2,7 +2,7 @@ package backstage
 
 import (
 	"encoding/json"
-	"gindemo01/public"
+	"gindemo01/public/sql"
 	"gindemo01/struct/sql_struct"
 	"github.com/gin-gonic/gin"
 	"time"
@@ -32,7 +32,7 @@ type wAdminPermission struct {
 }
 
 func GetPermission(context *gin.Context) {
-	P := public.AdminPermissionFind("permission_id LIKE ?", "%")
+	P := sql.AdminPermissionFind("permission_id LIKE ?", "%")
 	var R []rAdminPermission
 	for _, v := range P {
 		b := []byte(v.PermissionJson)
@@ -88,7 +88,7 @@ func PostPermission(context *gin.Context) {
 		}
 		js = js + `]}`
 		s.PermissionJson = js
-		msg := public.AdminPermissionAdd(s)
+		msg := sql.AdminPermissionAdd(s)
 		context.JSON(200, gin.H{
 			"msg": msg,
 		})

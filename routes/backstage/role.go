@@ -2,7 +2,7 @@ package backstage
 
 import (
 	"encoding/json"
-	"gindemo01/public"
+	"gindemo01/public/sql"
 	"gindemo01/struct/sql_del_struct"
 	"gindemo01/struct/sql_struct"
 	"github.com/gin-gonic/gin"
@@ -24,7 +24,7 @@ type AdminPermission struct {
 }
 
 func GetRole(c *gin.Context) {
-	role := public.AdminRoleFind("role_id LIKE ?", "%")
+	role := sql.AdminRoleFind("role_id LIKE ?", "%")
 	var R []AdminPermission
 	for _, v := range role {
 		b := []byte(v.PermissionJson)
@@ -58,8 +58,8 @@ func PostRole(c *gin.Context) {
 	if err := c.ShouldBind(&u); err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{"error": err.Error()})
 	} else {
-		s := public.AdminRoleFind("role_id LIKE ?", "%")
-		s1 := public.AdminRoleFind("name = ?", u.Name)
+		s := sql.AdminRoleFind("role_id LIKE ?", "%")
+		s1 := sql.AdminRoleFind("name = ?", u.Name)
 		if len(s1) > 0 {
 			c.JSON(201, gin.H{
 				"msg": "角色名已存在",
@@ -84,7 +84,7 @@ func PostRole(c *gin.Context) {
 		js = js + `]}`
 		U.PermissionJson = js
 		c.JSON(200, gin.H{
-			"msg": public.AdminRoleAdd(U),
+			"msg": sql.AdminRoleAdd(U),
 		})
 
 	}
@@ -95,8 +95,8 @@ func PutRole(c *gin.Context) {
 	if err := c.ShouldBind(&u); err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{"error": err.Error()})
 	} else {
-		msg := public.ReviseAdminrole(u)
-		role := public.AdminRoleFind("role_id LIKE ?", "%")
+		msg := sql.ReviseAdminrole(u)
+		role := sql.AdminRoleFind("role_id LIKE ?", "%")
 		c.JSON(200, gin.H{
 			"msg":  msg,
 			"list": role,
@@ -111,8 +111,8 @@ func DelRole(c *gin.Context) {
 	} else {
 		var U sql_del_struct.AdminRole
 		U.RoleId = u.RoleId
-		msg := public.DelAdminRole(U)
-		role := public.AdminRoleFind("role_id LIKE ?", "%")
+		msg := sql.DelAdminRole(U)
+		role := sql.AdminRoleFind("role_id LIKE ?", "%")
 		c.JSON(200, gin.H{
 			"msg":  msg,
 			"list": role,

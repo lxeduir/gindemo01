@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"gindemo01/common"
 	"gindemo01/public"
+	"gindemo01/public/redis"
+	"gindemo01/public/sql"
 	"gindemo01/routes/backstage"
 	"gindemo01/routes/front"
 	"github.com/gin-gonic/gin"
@@ -25,14 +27,18 @@ func init() {
 	if common.ReadConf() != nil {
 		return //读取配置文件失败
 	}
-	err := public.InitDB()
+	err := sql.InitDB()
 	if err != nil {
+		fmt.Println("初始化失败 - 1")
 		return //初始化数据库失败
 	}
-	err = public.InitClirnt()
+	err = redis.InitClirnt()
 	if err != nil {
+		fmt.Println("初始化失败 - 2")
+		panic(err)
 		return //初始化redis失败
-	}
-	fmt.Println("初始化成功")
 
+	}
+	public.Online()
+	fmt.Println("初始化成功")
 }

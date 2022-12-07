@@ -4,6 +4,7 @@ type configModel struct {
 	Server *serverModel `yaml:"server"`
 	Mysql  *mysqlModel  `yaml:"mysql"`
 	Jwt    *jwtModel    `yaml:"jwt"`
+	Redis  *redisModel  `json:"redis"`
 }
 
 type serverModel struct {
@@ -16,4 +17,11 @@ type mysqlModel struct {
 }
 type jwtModel struct {
 	Key string `yaml:"key"`
+}
+type redisModel struct {
+	Host    string `yaml:"host"`
+	Port    string `yaml:"port"`
+	Passwd  string `yaml:"password"`
+	UserDb  int    `yaml:"user_db"`
+	AdminDb int    `yaml:"admin_db"`
 }

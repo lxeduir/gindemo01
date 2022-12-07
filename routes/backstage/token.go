@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gindemo01/common"
 	"gindemo01/public"
+	"gindemo01/public/redis"
 	"gindemo01/struct/sql_del_struct"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
@@ -38,7 +39,7 @@ func SetTokenAdmininfo(U sql_del_struct.Admininfo, expireTime time.Duration) str
 			ExpiresAt: time.Now().Add(time.Hour * 24).Unix(), //过期时间
 			IssuedAt:  time.Now().Unix(),
 			Issuer:    "101,43,6,14", // 签名颁发者
-			Subject:   "user token",  //签名主题
+			Subject:   "admin token", //签名主题
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -49,7 +50,7 @@ func SetTokenAdmininfo(U sql_del_struct.Admininfo, expireTime time.Duration) str
 		return "error"
 	}
 	// str = tokenString
-	err = public.RedisSet(U.Uid, tokenString, expireTime)
+	err = redis.Set(U.Uid, tokenString, expireTime)
 	if err != nil {
 		return "reads-error"
 	}
@@ -88,16 +89,16 @@ func getting(c *gin.Context) {
 		})
 		c.Abort()
 	} else {
-		redisToken, err := public.RedisGet(cla.UserId)
+		redisToken, err := redis.Get(cla.UserId)
 		if err != nil {
 			c.JSON(200, gin.H{
-				"err": "redis",
+				"err": "登录过期",
 			})
 			c.Abort()
 		} else {
 			if redisToken == authorizations {
-				c.Set("admininfo", cla)
-				err = public.RedisSet(cla.UserId, redisToken, time.Hour)
+				c.Set("cla", cla)
+				err = redis.Set(cla.UserId, redisToken, time.Hour)
 				if err != nil {
 					c.JSON(200, gin.H{
 						"err": "redis",

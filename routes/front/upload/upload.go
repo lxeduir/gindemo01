@@ -2,7 +2,7 @@ package upload
 
 import (
 	"fmt"
-	"gindemo01/public"
+	"gindemo01/public/sql"
 	"gindemo01/struct/sql_struct"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -22,7 +22,7 @@ func Img(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"uploading": "done", "message": "上传文件格式错误"})
 		return
 	}
-	U := public.UserinfoFind("uid = ?"+
+	U := sql.UserinfoFind("uid = ?"+
 		"", uid)
 	if len(U) == 0 {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -57,7 +57,7 @@ func Img(c *gin.Context) {
 	u.File = "./Assets/" + fileName
 	u.Updatatime = strconv.FormatInt(time.Now().Unix(), 10)
 	u.Name = name
-	msg := public.UserImgAdd(u)
+	msg := sql.UserImgAdd(u)
 	c.JSON(http.StatusOK, gin.H{
 		"message": fmt.Sprintf("'%s' upload success.", file.Filename),
 		"msg":     msg,

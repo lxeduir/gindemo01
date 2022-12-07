@@ -2,7 +2,7 @@ package login
 
 import (
 	"fmt"
-	"gindemo01/public"
+	"gindemo01/public/sql"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -20,7 +20,7 @@ type claims struct {
 func Setting(ctx *gin.Context) {
 	uid, err1 := ctx.GetQuery("uid")
 	//U := public.UserInfoFind("uid", uid, public.Method[0])
-	U := public.UserinfoFind("uid = ?", uid)
+	U := sql.UserinfoFind("uid = ?", uid)
 	if len(U) == 0 {
 		ctx.JSON(201, gin.H{
 			"msg": "uid不存在",
@@ -91,7 +91,7 @@ func GetToken(tokenString string) string {
 	return claims.UserId
 }
 func SetToken(Uid string) string {
-	U := public.UserinfoFind("uid = ?", Uid)
+	U := sql.UserinfoFind("uid = ?", Uid)
 	if len(U) == 0 {
 		return "用户不存在"
 	}

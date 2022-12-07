@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"gindemo01/public"
+	"gindemo01/public/sql"
 	"gindemo01/routes/front/login"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -24,7 +24,7 @@ func TokenGet(ctx *gin.Context) {
 	}
 	// 最后成功了
 	//U = public.UserInfoFind("uid", Uid, public.Method[0])
-	U := public.UserinfoFind("uid = ?", Uid)
+	U := sql.UserinfoFind("uid = ?", Uid)
 	if len(U) > 0 && U[0].Userstatus == 1 {
 		return
 	} else if U[0].Userstatus != 1 {

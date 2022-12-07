@@ -1,7 +1,7 @@
 package query
 
 import (
-	"gindemo01/public"
+	"gindemo01/public/sql"
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,7 +14,7 @@ func QueryUserinfo(c *gin.Context) {
 		})
 		return
 	}
-	U := public.UserinfoFind(method, content)
+	U := sql.UserinfoFind(method, content)
 	c.JSON(200, gin.H{
 		"list": U,
 	})

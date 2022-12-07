@@ -10,4 +10,6 @@ var (
 	MysqlInfo *mysqlModel
 
 	Jwtinfo *jwtModel
+
+	Redisinfo *redisModel
 )

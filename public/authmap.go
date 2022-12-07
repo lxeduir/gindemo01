@@ -2,6 +2,7 @@ package public
 
 import (
 	"encoding/json"
+	"gindemo01/public/sql"
 	"strconv"
 )
 
@@ -62,7 +63,7 @@ func Authmap(RoleId string) map[string]map[int]int {
 	}
 }
 func Getpermission(query string, args string) []rAdminPermission {
-	P := AdminRoleFind(query, args)
+	P := sql.AdminRoleFind(query, args)
 	var R []rAdminPermission
 	for _, v := range P {
 		b := []byte(v.PermissionJson)
