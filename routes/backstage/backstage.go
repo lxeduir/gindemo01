@@ -22,12 +22,19 @@ func BackMain(rback *gin.Engine) {
 		BackGroup.DELETE("/permission", DelPermission)
 		BackGroup.POST("/authentication", getting, Authentication)
 		BackGroup.GET("/personal", getting, getPersonal)
+		BackGroup.GET("/token", getting, getToken)
 	}
 	AuthGroup := BackGroup.Group("/auth")
 	{
 		AuthGroup.POST("/userinfo/:type_id/:operate", getting, userinfo)
 
 	}
+}
+
+func getToken(c *gin.Context) {
+	c.JSON(200, gin.H{
+		"msg": "ok",
+	})
 }
 
 func Auth(c *gin.Context) {

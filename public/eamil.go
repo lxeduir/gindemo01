@@ -5,6 +5,7 @@ import (
 	"gopkg.in/eapache/queue.v1"
 	"net/smtp"
 	"regexp"
+	"time"
 )
 
 var tos = queue.New()
@@ -13,7 +14,7 @@ var flag = false
 
 func Email(to []string, content string) bool {
 	subject := fmt.Sprintf("Subject: %s\r\n", "国信安发信邮件")
-	send := fmt.Sprintf("From: %s 测试发件邮箱\r\n", "国信安")
+	send := fmt.Sprintf("From: %s 发件邮箱\r\n", "国信安")
 	receiver := fmt.Sprintf("To: %s\r\n", to[0])
 	contentType := "Content-Type: text/html" + "; charset=UTF-8\r\n\r\n"
 	msg := []byte(subject + send + receiver + contentType + content)
@@ -26,10 +27,12 @@ func Email(to []string, content string) bool {
 	}
 	return true
 }
-func SignUp(addr string) string {
+func CaptchaEmail(addr string) string {
 	headText := "尊敬的用户："
 	footText := "如果您没有获取过验证码，请忽略此邮件"
-	content := "<div><p>" + headText + "</p><p>" + "您的验证码为: " + addr + "</p></div>" + "<div><p>" + footText + "</p></div>"
+	starttime := "验证码过期时间为：" + time.Now().Add(time.Minute*5).Format("2006-01-02 15:04:05")
+	content := "<div><p>" + headText + "</p><p>" + "您的验证码为: <h1>" + addr + "</h1></p><p>" + starttime + "</p></div>" + "<div><p>" + footText + "</p></div>"
+
 	return content
 }
 func VerifyEmailFormat(email string) bool {

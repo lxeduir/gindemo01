@@ -30,15 +30,15 @@ func SignUpUser(c *gin.Context) {
 		r := rand.New(rand.NewSource(time.Now().UnixNano()))
 		u.Uid = strconv.FormatInt((time.Now().Unix()-660000000)*100+int64(r.Intn(128)), 10) //给定一个uid
 		u.Passwd = public.MD5(cjson.Passwd + u.Uid)                                         //对密码进行加密
-		caps := redis.GetCaptcha(cjson.Captcha)
+		caps := redis.GetCaptcha(cjson.Captcha, 4)
 		if caps == "err" {
-			c.JSON(http.StatusBadGateway, gin.H{"error": "验证码错误"})
+			c.JSON(201, gin.H{"err": "验证码错误"})
 			return
 		} else {
 			if caps == cjson.Email {
 				U := sql.UserinfoFind("email = ?", cjson.Email)
 				if len(U) > 0 {
-					c.JSON(http.StatusBadGateway, gin.H{"error": "该邮箱已经注册"})
+					c.JSON(201, gin.H{"err": "该邮箱已经注册"})
 					return
 				}
 				u.Email = cjson.Email
@@ -50,7 +50,7 @@ func SignUpUser(c *gin.Context) {
 				c.JSON(http.StatusOK, gin.H{"msg": "注册成功"})
 
 			} else {
-				c.JSON(http.StatusBadGateway, gin.H{"error": "验证码错误"})
+				c.JSON(201, gin.H{"err": "验证码错误"})
 				return
 			}
 		}

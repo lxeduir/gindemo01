@@ -3,6 +3,7 @@ package front
 import (
 	"gindemo01/public"
 	"gindemo01/routes/front/Increased"
+	"gindemo01/routes/front/corporate"
 	"gindemo01/routes/front/login"
 	"gindemo01/routes/front/personal"
 	"gindemo01/routes/front/query"
@@ -36,6 +37,8 @@ func Main(rack *gin.Engine) {
 		frontGroup.POST("/captcha", Increased.Captcha)
 		frontGroup.POST("/personal", token.Getting, personal.PostPersonal)
 		frontGroup.GET("/personal", token.Getting, personal.GetPersonal)
+		frontGroup.POST("/corporate", token.Getting, corporate.PostCorporate)
+		frontGroup.GET("/corporate", token.Getting, corporate.GetCorporate)
 	}
 }
 
@@ -55,7 +58,7 @@ func emails(c *gin.Context) {
 		return
 	}
 	to := []string{emails}
-	public.Email(to, public.SignUp("?123"))
+	public.Email(to, public.CaptchaEmail("?123"))
 	c.JSON(200, gin.H{
 		"code": 200,
 	})

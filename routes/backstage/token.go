@@ -50,7 +50,7 @@ func SetTokenAdmininfo(U sql_del_struct.Admininfo, expireTime time.Duration) str
 		return "error"
 	}
 	// str = tokenString
-	err = redis.Set(U.Uid, tokenString, expireTime)
+	err = redis.Set(U.Uid, tokenString, expireTime, 0)
 	if err != nil {
 		return "reads-error"
 	}
@@ -84,12 +84,11 @@ func getting(c *gin.Context) {
 	cla := GetTokenAdmin(authorizations)
 	if cla.UserId == "error" {
 		c.JSON(200, gin.H{
-			"code":  200,
-			"error": "token",
+			"err": "token",
 		})
 		c.Abort()
 	} else {
-		redisToken, err := redis.Get(cla.UserId)
+		redisToken, err := redis.Get(cla.UserId, 1)
 		if err != nil {
 			c.JSON(200, gin.H{
 				"err": "登录过期",
@@ -98,7 +97,7 @@ func getting(c *gin.Context) {
 		} else {
 			if redisToken == authorizations {
 				c.Set("cla", cla)
-				err = redis.Set(cla.UserId, redisToken, time.Hour)
+				err = redis.Set(cla.UserId, redisToken, time.Hour, 1)
 				if err != nil {
 					c.JSON(200, gin.H{
 						"err": "redis",

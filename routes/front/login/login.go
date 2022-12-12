@@ -35,27 +35,50 @@ func User(c *gin.Context) {
 		U := sql.UserinfoFind("email = ?", l.Email)
 		if len(U) == 0 {
 			c.JSON(201, gin.H{
-				"msg": R.msg,
 				"err": "邮箱不存在",
 			})
 		} else {
-			emails := redis.GetCaptcha(l.Captcha)
-			if U[0].Passwd == public.MD5(l.Passwd+U[0].Uid) || emails == U[0].Email {
+			emails := redis.GetCaptcha(l.Captcha, 3)
+			if U[0].Passwd == public.MD5(l.Passwd+U[0].Uid) {
 				R.state = U[0].Userstatus
 				R.Uid = U[0].Uid
 				R.token = token.SetTokenUserinfo(U[0], time.Hour*24*7)
 				R.msg = 1
 				c.JSON(200, gin.H{
-					"msg":   R.msg,
-					"uid":   R.Uid,
-					"token": R.token,
-					"state": R.state,
+					"msg":      R.msg,
+					"uid":      R.Uid,
+					"token":    R.token,
+					"state":    R.state,
+					"username": U[0].Username,
 				})
 			} else {
+
+				if emails == U[0].Email {
+					R.state = U[0].Userstatus
+					R.Uid = U[0].Uid
+					R.token = token.SetTokenUserinfo(U[0], time.Hour*24*7)
+					R.msg = 1
+					c.JSON(200, gin.H{
+						"msg":      R.msg,
+						"uid":      R.Uid,
+						"token":    R.token,
+						"state":    R.state,
+						"username": U[0].Username,
+					})
+					return
+				} else if l.Passwd == "" {
+					c.JSON(201, gin.H{
+						"err": "验证码错误",
+					})
+					return
+				}
+
 				c.JSON(201, gin.H{
-					"err": "密码或验证码错误",
+					"err": "密码错误",
 				})
+				return
 			}
+
 		}
 	} //登录函数
 }

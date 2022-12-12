@@ -33,11 +33,11 @@ type nperson struct {
 	Address string `json:"address"`
 }
 type cperson struct {
-	Name   string
-	Sex    string
-	Doc    string
-	Idcard string
-	Phone  string
+	Name   string `json:"name"`
+	Sex    string `json:"sex"`
+	Doc    string `json:"doc"`
+	Idcard string `json:"idcard"`
+	Phone  string `json:"phone"`
 }
 type data struct {
 	About     string  `json:"about"`
@@ -45,7 +45,7 @@ type data struct {
 	Content   content `json:"content"`
 }
 type listdata struct {
-	data
+	Datas data `json:"data"`
 }
 
 func PostPersonal(c *gin.Context) {
@@ -60,7 +60,7 @@ func PostPersonal(c *gin.Context) {
 		U.AffairsId = tsgutils.GUID()
 		U.Uid = Cla.UserId
 		U.AffairsType = "personal"
-		U.AffairsData = datatostring(p)
+		U.AffairsData = Datatostring(p)
 		U.State = p.Status
 		U.DisposeTime = ""
 		U.UpdateBy = Cla.UserId
@@ -81,18 +81,25 @@ func GetPersonal(c *gin.Context) {
 	cla, _ := c.Get("cla")
 	Cla := cla.(token.Claimadmins)
 	u := sql.AffairsFind("uid = ?", Cla.UserId)
-	var d []data
+
+	var ls []listdata
+
 	for _, v := range u {
-		b := []byte(v.AffairsData)
-		err := json.Unmarshal(b, &d)
-		if err != nil {
-			c.JSON(201, gin.H{"err": "数据解析错误"})
-			return
+		if v.AffairsType == "personal" {
+			b := []byte(v.AffairsData)
+			var l listdata
+			err := json.Unmarshal(b, &l)
+			if err != nil {
+				c.JSON(201, gin.H{"err": "数据解析错误"})
+				return
+			}
+			ls = append(ls, l)
 		}
+
 	}
-	c.JSON(200, gin.H{"data": u})
+	c.JSON(200, gin.H{"datas": ls})
 }
-func datatostring(p personal) string {
+func Datatostring(p personal) string {
 	var d data
 	d.About = p.About
 	d.Applicant = p.Applicant

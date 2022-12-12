@@ -43,7 +43,7 @@ func SetTokenUserinfo(U sql_del_struct.Userinfo, expireTime time.Duration) strin
 		return "error"
 	}
 	// str = tokenString
-	err = redis.Set(U.Uid, tokenString, expireTime)
+	err = redis.Set(U.Uid, tokenString, expireTime, 0)
 	if err != nil {
 		return "reads-error"
 	}
@@ -81,7 +81,7 @@ func Getting(c *gin.Context) {
 		})
 		c.Abort()
 	} else {
-		redisToken, err := redis.Get(cla.UserId)
+		redisToken, err := redis.Get(cla.UserId, 0)
 		if err != nil {
 			c.JSON(200, gin.H{
 				"err": "登录过期",
@@ -90,7 +90,7 @@ func Getting(c *gin.Context) {
 		} else {
 			if redisToken == authorizations {
 				c.Set("cla", cla)
-				err = redis.Set(cla.UserId, redisToken, time.Hour)
+				err = redis.Set(cla.UserId, redisToken, time.Hour, 0)
 				if err != nil {
 					c.JSON(200, gin.H{
 						"err": "redis",
