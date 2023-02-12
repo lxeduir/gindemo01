@@ -24,7 +24,12 @@ type AdminPermission struct {
 }
 
 func GetRole(c *gin.Context) {
-	role := sql.AdminRoleFind("role_id LIKE ?", "%")
+	role, errSql := sql.AdminRoleFind("role_id LIKE ?", "%")
+	if errSql != nil {
+		c.JSON(201, gin.H{
+			"err": errSql.Error(),
+		})
+	}
 	var R []AdminPermission
 	for _, v := range role {
 		b := []byte(v.PermissionJson)
@@ -58,15 +63,41 @@ func PostRole(c *gin.Context) {
 	if err := c.ShouldBind(&u); err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{"error": err.Error()})
 	} else {
-		s := sql.AdminRoleFind("role_id LIKE ?", "%")
-		s1 := sql.AdminRoleFind("name = ?", u.Name)
+		s, errSql := sql.AdminRoleFind("role_id LIKE ?", "%")
+		if errSql != nil {
+			c.JSON(201, gin.H{
+				"err": errSql.Error(),
+			})
+		}
+		s1, errSql := sql.AdminRoleFind("name = ?", u.Name)
+		if errSql != nil {
+			c.JSON(201, gin.H{
+				"err": errSql.Error(),
+			})
+		}
 		if len(s1) > 0 {
 			c.JSON(201, gin.H{
-				"msg": "角色名已存在",
+				"err": "角色名已存在",
 			})
 			return
 		}
-		U.RoleId = strconv.Itoa(len(s) + 1)
+		Role, errSql := sql.AdminRoleFind("role_id LIKE ?", "%")
+		if errSql != nil {
+			c.JSON(201, gin.H{
+				"err": errSql.Error(),
+			})
+		}
+		mp := make(map[int]int)
+		for _, v := range Role {
+			i, _ := strconv.Atoi(v.RoleId)
+			mp[i] = v.Orders
+		}
+		for i := 1; i < len(Role)+10; i++ {
+			if _, ok := mp[i]; !ok {
+				U.RoleId = strconv.Itoa(i)
+				break
+			}
+		}
 		U.Name = u.Name
 		U.Description = u.Description
 		U.CreateBy = "等待实现"
@@ -83,23 +114,53 @@ func PostRole(c *gin.Context) {
 		}
 		js = js + `]}`
 		U.PermissionJson = js
-		c.JSON(200, gin.H{
-			"msg": sql.AdminRoleAdd(U),
-		})
+		if err := sql.AdminRoleAdd(U); err != nil {
+			c.JSON(201, gin.H{
+				"err": err.Error(),
+			})
+		} else {
+			c.JSON(200, gin.H{
+				"msg": "添加成功",
+			})
+		}
 
 	}
 
 }
 func PutRole(c *gin.Context) {
-	var u sql_struct.AdminRole
+	var u AdminPermission
 	if err := c.ShouldBind(&u); err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{"error": err.Error()})
 	} else {
-		msg := sql.ReviseAdminrole(u)
-		role := sql.AdminRoleFind("role_id LIKE ?", "%")
+
+		msg := sql.ReviseAdminrole(u.ToAdminrole())
+		role, _ := sql.AdminRoleFind("role_id LIKE ?", "%")
+		var R []AdminPermission
+		for _, v := range role {
+			b := []byte(v.PermissionJson)
+			var m listAdminPermission
+			err := json.Unmarshal(b, &m)
+			if err != nil {
+				c.JSON(201, gin.H{
+					"msg": err.Error(),
+				})
+				return
+			}
+			var r AdminPermission
+			r.RoleId = v.RoleId
+			r.Name = v.Name
+			r.Description = v.Description
+			r.CreateBy = v.CreateBy
+			r.CreateTime = v.CreateTime
+			r.UpdateBy = v.UpdateBy
+			r.UpdateTime = v.UpdateTime
+			r.Orders = v.Orders
+			r.PermissionJson = m
+			R = append(R, r)
+		}
 		c.JSON(200, gin.H{
 			"msg":  msg,
-			"list": role,
+			"list": R,
 		})
 
 	}
@@ -112,10 +173,29 @@ func DelRole(c *gin.Context) {
 		var U sql_del_struct.AdminRole
 		U.RoleId = u.RoleId
 		msg := sql.DelAdminRole(U)
-		role := sql.AdminRoleFind("role_id LIKE ?", "%")
+		role, _ := sql.AdminRoleFind("role_id LIKE ?", "%")
 		c.JSON(200, gin.H{
 			"msg":  msg,
 			"list": role,
 		})
 	}
+}
+
+func (a AdminPermission) ToAdminrole() sql_struct.AdminRole {
+	var A sql_struct.AdminRole
+	A.Name = a.Name
+	A.Description = a.Description
+	A.UpdateBy = a.UpdateBy
+	A.Orders = a.Orders
+	A.RoleId = a.RoleId
+	js := `{"list":[`
+	for i, v := range a.PermissionJson.List {
+		js = js + `{"type":"` + v.Type + `","type_id":"` + v.Id + `","permission":"` + v.P + `"}`
+		if i != len(a.PermissionJson.List)-1 {
+			js = js + ","
+		}
+	}
+	js = js + `]}`
+	A.PermissionJson = js
+	return A
 }

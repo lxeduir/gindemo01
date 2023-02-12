@@ -1,14 +1,14 @@
 package sql_del_struct
 
 type Userinfo struct {
-	Uid         string
-	Email       string
-	Username    string
-	Passwd      string
-	Permissions string
-	Userstatus  int
-	Signtime    string
-	DeletedAt   string
+	Uid         string `json:"uid,omitempty"`
+	Email       string `json:"email,omitempty"`
+	Username    string `json:"username,omitempty"`
+	Passwd      string `json:"passwd,omitempty"`
+	Permissions string `json:"permissions,omitempty"`
+	Userstatus  int    `json:"userstatus,omitempty"`
+	Signtime    string `json:"signtime,omitempty"`
+	DeletedAt   string `json:"deletedAt,omitempty"`
 }
 type Admininfo struct {
 	Uid       string
@@ -82,4 +82,17 @@ type Affairs struct {
 	UpdateBy    string
 	UpdateTime  string `gorm:"autoUpdateTime"`
 	DeletedAt   string `json:"DeletedAt,omitempty"`
+}
+type UserIdentity struct {
+	Uid       string
+	Name      string
+	Sex       int
+	Ethnic    string
+	Polstatus string
+	Origin    string
+	Value     string
+	Docunum   string
+	Birthdate string
+	Phonenum  string
+	DeletedAt string `json:"DeletedAt,omitempty"`
 }

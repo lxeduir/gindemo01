@@ -38,11 +38,11 @@ func User(c *gin.Context) {
 				"err": "邮箱不存在",
 			})
 		} else {
-			emails := redis.GetCaptcha(l.Captcha, 3)
+			emails, _ := redis.GetCaptcha(l.Captcha, 3)
 			if U[0].Passwd == public.MD5(l.Passwd+U[0].Uid) {
 				R.state = U[0].Userstatus
 				R.Uid = U[0].Uid
-				R.token = token.SetTokenUserinfo(U[0], time.Hour*24*7)
+				R.token = token.SetTokenUserinfo(U[0], time.Hour)
 				R.msg = 1
 				c.JSON(200, gin.H{
 					"msg":      R.msg,
@@ -56,7 +56,7 @@ func User(c *gin.Context) {
 				if emails == U[0].Email {
 					R.state = U[0].Userstatus
 					R.Uid = U[0].Uid
-					R.token = token.SetTokenUserinfo(U[0], time.Hour*24*7)
+					R.token = token.SetTokenUserinfo(U[0], time.Hour)
 					R.msg = 1
 					c.JSON(200, gin.H{
 						"msg":      R.msg,

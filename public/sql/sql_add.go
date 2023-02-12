@@ -52,13 +52,13 @@ func UserRedisAdd(U sql_struct.UserRedis) int {
 	//fmt.Println(db.NewRecord(&U))
 	return 1
 }
-func AdminRoleAdd(U sql_struct.AdminRole) int {
+func AdminRoleAdd(U sql_struct.AdminRole) error {
 	db := GetDB()
 	db.SingularTable(true)
 	//fmt.Println(db.NewRecord(&U))
-	db.Create(&U) //将上边定义的用户数据写入到数据库user表中
+	err := db.Create(&U).Error //将上边定义的用户数据写入到数据库user表中
 	//fmt.Println(db.NewRecord(&U))
-	return 1
+	return err
 }
 func AdminPermissionAdd(U sql_struct.AdminPermission) int {
 	db := GetDB()
@@ -66,9 +66,15 @@ func AdminPermissionAdd(U sql_struct.AdminPermission) int {
 	db.Create(&U) //将上边定义的用户数据写入到数据库user表中
 	return 1
 }
-func AffairsAdd(U sql_struct.Affairs) int {
+func AffairsAdd(U sql_struct.Affairs) error {
 	db := GetDB()
 	db.SingularTable(true)
-	db.Create(&U) //将上边定义的用户数据写入到数据库user表中
-	return 1
+	err := db.Create(&U).Error //将上边定义的用户数据写入到数据库user表中
+	return err
+}
+func UserIdentityAdd(U sql_struct.UserIdentity) error {
+	db := GetDB()
+	db.SingularTable(true)
+	err := db.Create(&U).Error //将上边定义的用户数据写入到数据库user表中
+	return err
 }

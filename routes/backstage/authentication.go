@@ -18,7 +18,7 @@ func Authentication(c *gin.Context) {
 		typeId, _ := strconv.Atoi(c.GetHeader("type_id"))
 		operate, _ := strconv.Atoi(c.GetHeader("operate"))
 		u := sql.AdmininfoFirst("uid", Cla.UserId)
-		s := sql.AdminRoleFind("role_id = ?", strconv.Itoa(u.RoleId))
+		s, _ := sql.AdminRoleFind("role_id = ?", strconv.Itoa(u.RoleId))
 		if len(s) == 0 {
 			c.JSON(200, gin.H{
 				"uid":     Cla.UserId,

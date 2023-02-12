@@ -28,6 +28,7 @@ func init() {
 		return //读取配置文件失败
 	}
 	err := sql.InitDB()
+	//fmt.Println(common.MysqlInfo.Id)
 	if err != nil {
 		fmt.Println("初始化失败 - 1")
 		return //初始化数据库失败
@@ -39,6 +40,6 @@ func init() {
 		return //初始化redis失败
 
 	}
-	public.Online()
+	//public.Online()
 	fmt.Println("初始化成功")
 }

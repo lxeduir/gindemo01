@@ -30,7 +30,7 @@ func SignUpUser(c *gin.Context) {
 		r := rand.New(rand.NewSource(time.Now().UnixNano()))
 		u.Uid = strconv.FormatInt((time.Now().Unix()-660000000)*100+int64(r.Intn(128)), 10) //给定一个uid
 		u.Passwd = public.MD5(cjson.Passwd + u.Uid)                                         //对密码进行加密
-		caps := redis.GetCaptcha(cjson.Captcha, 4)
+		caps, _ := redis.GetCaptcha(cjson.Captcha, 4)
 		if caps == "err" {
 			c.JSON(201, gin.H{"err": "验证码错误"})
 			return

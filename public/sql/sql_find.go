@@ -14,13 +14,13 @@ func UserinfoFind(query string, args string) []sql_del_struct.Userinfo {
 	db.Debug().Where(query, args).Find(&user)
 	return user
 }
-func UserinfoFirst(field string, content string) sql_del_struct.Userinfo {
+func UserinfoFirst(field string, content string) (sql_del_struct.Userinfo, error) {
 	db := GetDB()
 	db.SingularTable(true) //严格匹配数据库名字
 	db.AutoMigrate(&sql_del_struct.Userinfo{})
-	var user []sql_del_struct.Userinfo
-	db.Debug().Where(field+" = ?", content).First(&user)
-	return user[0]
+	var user sql_del_struct.Userinfo
+	err := db.Debug().Where(field+" = ?", content).First(&user).Error
+	return user, err
 }
 func AdmininfoFind(query string, args string) []sql_del_struct.Admininfo {
 	db := GetDB()
@@ -54,13 +54,13 @@ func AdminRoutFind(query string, args string) []sql_del_struct.AdminRout {
 	db.Debug().Where(query, args).Find(&user)
 	return user
 }
-func AdminRoleFind(query string, args string) []sql_del_struct.AdminRole {
+func AdminRoleFind(query string, args string) ([]sql_del_struct.AdminRole, error) {
 	db := GetDB()
 	db.SingularTable(true) //严格匹配数据库名字
 	db.AutoMigrate(&sql_del_struct.AdminRole{})
 	var user []sql_del_struct.AdminRole
-	db.Debug().Where(query, args).Find(&user)
-	return user
+	err := db.Debug().Where(query, args).Find(&user).Error
+	return user, err
 }
 func AdminPermissionFind(query string, args string) []sql_del_struct.AdminPermission {
 	db := GetDB()
@@ -70,11 +70,28 @@ func AdminPermissionFind(query string, args string) []sql_del_struct.AdminPermis
 	db.Debug().Where(query, args).Find(&user)
 	return user
 }
-func AffairsFind(query string, args string) []sql_del_struct.Affairs {
+func AffairsFind(query string, args string) ([]sql_del_struct.Affairs, error) {
 	db := GetDB()
 	db.SingularTable(true) //严格匹配数据库名字
 	db.AutoMigrate(&sql_del_struct.Affairs{})
 	var user []sql_del_struct.Affairs
+	err := db.Debug().Where(query, args).Find(&user).Error
+	return user, err
+}
+
+func UserIdentityFind(query string, args string) []sql_del_struct.UserIdentity {
+	db := GetDB()
+	db.SingularTable(true) //严格匹配数据库名字
+	db.AutoMigrate(&sql_del_struct.UserIdentity{})
+	var user []sql_del_struct.UserIdentity
 	db.Debug().Where(query, args).Find(&user)
 	return user
+}
+func UserIdentityFirst(field string, content string) sql_del_struct.UserIdentity {
+	db := GetDB()
+	db.SingularTable(true) //严格匹配数据库名字
+	db.AutoMigrate(&sql_del_struct.UserIdentity{})
+	var user []sql_del_struct.UserIdentity
+	db.Debug().Where(field+" = ?", content).First(&user)
+	return user[0]
 }

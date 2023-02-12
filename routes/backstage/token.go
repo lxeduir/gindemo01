@@ -50,7 +50,7 @@ func SetTokenAdmininfo(U sql_del_struct.Admininfo, expireTime time.Duration) str
 		return "error"
 	}
 	// str = tokenString
-	err = redis.Set(U.Uid, tokenString, expireTime, 0)
+	err = redis.Set(U.Uid, tokenString, expireTime, 1)
 	if err != nil {
 		return "reads-error"
 	}

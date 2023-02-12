@@ -4,7 +4,9 @@ import (
 	"gindemo01/public"
 	"gindemo01/routes/front/Increased"
 	"gindemo01/routes/front/corporate"
+	"gindemo01/routes/front/identity"
 	"gindemo01/routes/front/login"
+	"gindemo01/routes/front/notice"
 	"gindemo01/routes/front/personal"
 	"gindemo01/routes/front/query"
 	"gindemo01/routes/front/revise"
@@ -31,14 +33,19 @@ func Main(rack *gin.Engine) {
 		frontGroup.GET("/tokens", login.Setting)
 		frontGroup.GET("/tokentime", login.Getting)
 		frontGroup.GET("/query", query.QueryUserinfo)
-		frontGroup.GET("/userinfo", query.UserInfo)
-		frontGroup.PUT("/userinfo", revise.UserInfo)
+		frontGroup.GET("/userinfo", token.Getting, query.UserInfo)
+		frontGroup.PUT("/userinfo", token.Getting, revise.UserInfo)
 		frontGroup.POST("/upload", limits.RequestSizeLimiter(4<<20), upload.Img)
 		frontGroup.POST("/captcha", Increased.Captcha)
 		frontGroup.POST("/personal", token.Getting, personal.PostPersonal)
 		frontGroup.GET("/personal", token.Getting, personal.GetPersonal)
 		frontGroup.POST("/corporate", token.Getting, corporate.PostCorporate)
 		frontGroup.GET("/corporate", token.Getting, corporate.GetCorporate)
+		frontGroup.GET("/identity", token.Getting, identity.Get)
+		frontGroup.POST("/identity", token.Getting, identity.POST)
+		frontGroup.PUT("/identity", token.Getting, identity.PUT)
+		frontGroup.POST("/forgetpasswd", login.Forget)
+		frontGroup.GET("/notice", notice.Get)
 	}
 }
 

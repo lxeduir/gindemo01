@@ -117,7 +117,7 @@ func SetCaptcha(e string, time time.Duration, d int) string {
 	}
 	return caps
 }
-func GetCaptcha(c string, d int) string {
+func GetCaptcha(c string, d int) (string, error) {
 	var redisDb *redis.Client
 	switch d {
 	case 0:
@@ -134,10 +134,7 @@ func GetCaptcha(c string, d int) string {
 		redisDb = redisDb0
 	}
 	val, err := redisDb.Get(c).Result()
-	if err != nil {
-		return "err"
-	}
-	return val
+	return val, err
 }
 func Del(key string, d int) {
 	var redisDb *redis.Client

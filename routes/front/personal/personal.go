@@ -56,7 +56,7 @@ func PostPersonal(c *gin.Context) {
 		c.JSON(201, gin.H{"err": "参数错误"})
 	} else {
 		var U sql_struct.Affairs
-		u := sql.AffairsFind("uid = ?", Cla.UserId)
+		u, _ := sql.AffairsFind("uid = ?", Cla.UserId)
 		U.AffairsId = tsgutils.GUID()
 		U.Uid = Cla.UserId
 		U.AffairsType = "personal"
@@ -80,7 +80,7 @@ func PostPersonal(c *gin.Context) {
 func GetPersonal(c *gin.Context) {
 	cla, _ := c.Get("cla")
 	Cla := cla.(token.Claimadmins)
-	u := sql.AffairsFind("uid = ?", Cla.UserId)
+	u, _ := sql.AffairsFind("uid = ?", Cla.UserId)
 
 	var ls []listdata
 

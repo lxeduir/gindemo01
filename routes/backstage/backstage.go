@@ -10,7 +10,9 @@ func BackMain(rback *gin.Engine) {
 		BackGroup.POST("/login", loginAdmin)
 		BackGroup.POST("/signup", signUpAdmin)
 		BackGroup.GET("/admininfo", getting, admininfo)
-		BackGroup.GET("/del", del)
+		BackGroup.DELETE("/admininfo", getting, deladmin)
+		BackGroup.GET("/userinfo", getting, userinfo)
+		BackGroup.DELETE("/userinfo", getting, deluser)
 		BackGroup.GET("/path", getting, path)
 		BackGroup.GET("/role", getting, GetRole)
 		BackGroup.POST("/role", getting, PostRole)
@@ -23,6 +25,10 @@ func BackMain(rback *gin.Engine) {
 		BackGroup.POST("/authentication", getting, Authentication)
 		BackGroup.GET("/personal", getting, getPersonal)
 		BackGroup.GET("/token", getting, getToken)
+		BackGroup.POST("/notice", getting, POSTNotice)
+		BackGroup.GET("/notice", getting, GETNotice)
+		BackGroup.PUT("/notice", getting, PUTNotice)
+		BackGroup.DELETE("/notice", getting, DELETENotice)
 	}
 	AuthGroup := BackGroup.Group("/auth")
 	{

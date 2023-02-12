@@ -56,7 +56,7 @@ func PostCorporate(c *gin.Context) {
 		c.JSON(201, gin.H{"err": "参数错误"})
 	} else {
 		var U sql_struct.Affairs
-		u := sql.AffairsFind("uid = ?", Cla.UserId)
+		u, _ := sql.AffairsFind("uid = ?", Cla.UserId)
 		U.AffairsId = tsgutils.GUID()
 		U.Uid = Cla.UserId
 		U.AffairsType = "corporate"
@@ -73,14 +73,18 @@ func PostCorporate(c *gin.Context) {
 				return
 			}
 		}
-		sql.AffairsAdd(U)
+		err := sql.AffairsAdd(U)
+		if err != nil {
+			c.JSON(201, gin.H{"err": "提交失败"})
+			return
+		}
 		c.JSON(200, gin.H{"msg": "提交成功"})
 	}
 }
 func GetCorporate(c *gin.Context) {
 	cla, _ := c.Get("cla")
 	Cla := cla.(token.Claimadmins)
-	u := sql.AffairsFind("uid = ?", Cla.UserId)
+	u, _ := sql.AffairsFind("uid = ?", Cla.UserId)
 
 	var ls []listdata
 	for _, v := range u {

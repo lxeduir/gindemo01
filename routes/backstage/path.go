@@ -11,6 +11,7 @@ type metas struct {
 	Icon  string `json:"icon"`
 }
 type super struct {
+	RoleId    int     `json:"role_id"`
 	Path      string  `json:"path"`
 	Component string  `json:"component"`
 	Name      string  `json:"name"`
@@ -53,6 +54,7 @@ func pathmake(path []sql_del_struct.AdminRout) interface{} {
 			s.Component = v.Component
 			s.Name = v.Name
 			s.Meta = m
+			s.RoleId = v.RoutId
 			rpath = append(rpath, s)
 		}
 	}
@@ -68,6 +70,7 @@ func pathmake(path []sql_del_struct.AdminRout) interface{} {
 				s.Component = vv.Component
 				s.Name = vv.Name
 				s.Meta = m
+				s.RoleId = vv.RoutId
 				rpaths = append(rpaths, s)
 			}
 		}

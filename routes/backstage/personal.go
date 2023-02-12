@@ -13,7 +13,7 @@ func getPersonal(c *gin.Context) {
 			"err": "认证失败",
 		})
 	}
-	affair := sql.AffairsFind("affaries_id = ?", "%")
+	affair, _ := sql.AffairsFind("affaries_id = ?", "%")
 	c.JSON(200, gin.H{
 		"list": affair,
 		"cla":  Cla,

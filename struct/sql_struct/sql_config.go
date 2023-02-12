@@ -1,13 +1,13 @@
 package sql_struct
 
 type Userinfo struct {
-	Uid         string
-	Email       string
-	Username    string
-	Passwd      string
-	Permissions string
-	Userstatus  int
-	Signtime    string
+	Uid         string `json:"uid"`
+	Email       string `json:"email"`
+	Username    string `json:"username"`
+	Passwd      string `json:"passwd,omitempty"`
+	Permissions string `json:"permissions"`
+	Userstatus  int    `json:"userstatus"`
+	Signtime    string `json:"signtime"`
 }
 type Admininfo struct {
 	Uid      string
@@ -87,4 +87,16 @@ type Affairs struct {
 	CreateTime  string `gorm:"autoCreateTime"`
 	UpdateBy    string
 	UpdateTime  string `gorm:"autoUpdateTime"`
+}
+type UserIdentity struct {
+	Uid       string
+	Name      string
+	Sex       int
+	Ethnic    string
+	Polstatus string
+	Origin    string
+	Value     string
+	Docunum   string
+	Birthdate string
+	Phonenum  string
 }

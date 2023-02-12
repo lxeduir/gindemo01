@@ -63,7 +63,7 @@ func Authmap(RoleId string) map[string]map[int]int {
 	}
 }
 func Getpermission(query string, args string) []rAdminPermission {
-	P := sql.AdminRoleFind(query, args)
+	P, _ := sql.AdminRoleFind(query, args)
 	var R []rAdminPermission
 	for _, v := range P {
 		b := []byte(v.PermissionJson)

@@ -21,7 +21,7 @@ func Captcha(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"err": "参数错误"})
 	} else {
 		var d int
-		if rec.Type == "login" {
+		if rec.Type == "login" || rec.Type == "forget" {
 			d = 3
 		} else if rec.Type == "signup" {
 			U := sql.UserinfoFind("email = ?", rec.Email)
